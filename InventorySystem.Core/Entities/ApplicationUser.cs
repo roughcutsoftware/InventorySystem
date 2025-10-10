@@ -6,6 +6,6 @@ namespace InventorySystem.Core.Entities
         {
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public ICollection<Purchase>? Purchases { get; set; }
-        //public ICollection<Sales>? Sales { get; set; }
+        public ICollection<Sales>? Sales { get; set; }
     }
 }

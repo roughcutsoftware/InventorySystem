@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InventorySystem.Core.Entities
+﻿namespace InventorySystem.Core.Entities
 {
-    internal class Sales
+    public class Sales
     {
         public int SaleId { get; set; }
         public DateTime SaleDate { get; set; }
