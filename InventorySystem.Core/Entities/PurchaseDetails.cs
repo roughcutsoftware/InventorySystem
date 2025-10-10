@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InventorySystem.Core.Entities
 {
-    internal class PurchaseDetails
+    public class PurchaseDetails
     {
         public int PurchaseDetailId { get; set; }
         public int Quantity { get; set; }

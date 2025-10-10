@@ -9,7 +9,7 @@ namespace InventorySystem.Core.Entities
     public class Product
     {
         public int ProductId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int QuantityInStock { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal CostPrice { get; set; }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InventorySystem.Core.Entities
+﻿namespace InventorySystem.Core.Entities
 {
     public class Supplier
     {
@@ -18,8 +12,7 @@ namespace InventorySystem.Core.Entities
         public bool IsActive { get; set; }
 
         //Nav props  i commented them until we implement these entities 
-        //public ICollection<Purchase>? Purchases { get; set; }
         public ICollection<Product>? Products { get; set; }
-
+        public ICollection<Purchase>? Purchases { get; set; }
     }
 }

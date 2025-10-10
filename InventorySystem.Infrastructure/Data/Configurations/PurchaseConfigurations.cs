@@ -18,14 +18,14 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             builder.Property(p => p.Status)
                    .HasMaxLength(50);
 
-            //builder.HasOne(p => p.Supplier)
-            //       .WithMany(s => s.Purchases)
-            //       .HasForeignKey(p => p.SupplierId)
-            //       .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(p => p.Supplier)
+                   .WithMany(s => s.Purchases)
+                   .HasForeignKey(p => p.SupplierId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.User)
+            builder.HasOne(p => p.CreatedBy)
                    .WithMany(u => u.Purchases)
-                   .HasForeignKey(p => p.CreatedBy)
+                   .HasForeignKey(p => p.CreatedById)
                    .OnDelete(DeleteBehavior.Restrict);
         }
     }

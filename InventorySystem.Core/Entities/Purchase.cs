@@ -1,4 +1,7 @@
-﻿namespace InventorySystem.Core.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace InventorySystem.Core.Entities
 {
     public class Purchase
     {
@@ -7,14 +10,11 @@
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
 
-        public int CreatedBy { get; set; }
+        public string? CreatedById { get; set; }
         public int SupplierId { get; set; }
 
-        public User User { get; set; }
-
-        //public Supplier Supplier { get; set; }
-
-        //public ICollection<PurchaseDetails> PurchaseDetails { get; set; } = new List<PurchaseDetails>();
-
+        public ApplicationUser? CreatedBy { get; set; }
+        public Supplier Supplier { get; set; } = null!;
+        public ICollection<PurchaseDetails> PurchaseDetails { get; set; } = new List<PurchaseDetails>();
     }
 }
