@@ -1,23 +1,20 @@
 ﻿using InventorySystem.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventorySystem.Infrastructure.Data
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext(DbContextOptions options) : DbContext(options)
     {
-        public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<SaleDetails> SaleDetails { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDBContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
+
+        #region Tables
+        public DbSet<User> Users { get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        #endregion
     }
 }
