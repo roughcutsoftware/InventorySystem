@@ -7,10 +7,10 @@
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
 
-        public int CreatedBy { get; set; }
+        public string? CreatedById { get; set; }
         public int SupplierId { get; set; }
 
-        public User User { get; set; }
+        public ApplicationUser? User { get; set; }
 
         //public Supplier Supplier { get; set; }
 

@@ -1,16 +1,11 @@
-﻿namespace InventorySystem.Core.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace InventorySystem.Core.Entities
 {
-    public class User
+    public class ApplicationUser : IdentityUser
         {
-            public int UserId { get; set; }
-
-            public string Username { get; set; } = string.Empty;
-            public string PasswordHash { get; set; } = string.Empty;
-            public string Role { get; set; } = "User";
-
-            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-            public ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
-            //public ICollection<Sales> Sales { get; set; } = new List<Sales>();
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public ICollection<Purchase>? Purchases { get; set; }
+        //public ICollection<Sales>? Sales { get; set; }
     }
 }
