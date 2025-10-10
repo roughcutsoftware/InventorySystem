@@ -9,7 +9,7 @@ namespace InventorySystem.Core.Entities
     public class Product
     {
         public int ProductId { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int QuantityInStock { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal CostPrice { get; set; }
@@ -23,7 +23,7 @@ namespace InventorySystem.Core.Entities
 
 
         public Category Category { get; set; } = null!;
-        public ICollection<SaleDetail> SaleDetails { get; set; } = new HashSet<SaleDetail>();
+        public ICollection<SaleDetails> SaleDetails { get; set; } = new HashSet<SaleDetails>();
     }
 
 
