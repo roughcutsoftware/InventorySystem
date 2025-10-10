@@ -9,7 +9,7 @@
 
         //fk's
         public int CustomerId { get; set; }
-        public int CreatedBy { get; set; } // UserId
+        public string CreatedBy { get; set; } // UserId
 
         //Nav props  i commented them until we implement these entities 
         public Customer? Customer { get; set; }
