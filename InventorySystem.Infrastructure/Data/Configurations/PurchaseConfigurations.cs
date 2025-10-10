@@ -27,6 +27,14 @@ namespace InventorySystem.Infrastructure.Data.Configurations
                    .WithMany(u => u.Purchases)
                    .HasForeignKey(p => p.CreatedById)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasData(
+               new Purchase { PurchaseId = 1, PurchaseDate = DateTime.Now.AddDays(-15), TotalAmount = 2500.00m, Status = "Completed", SupplierId = 1, CreatedById = "U1" },
+               new Purchase { PurchaseId = 2, PurchaseDate = DateTime.Now.AddDays(-12), TotalAmount = 1800.50m, Status = "Completed", SupplierId = 2, CreatedById = "U2" },
+               new Purchase { PurchaseId = 3, PurchaseDate = DateTime.Now.AddDays(-10), TotalAmount = 900.75m, Status = "Pending", SupplierId = 3, CreatedById = "U3" },
+               new Purchase { PurchaseId = 4, PurchaseDate = DateTime.Now.AddDays(-5), TotalAmount = 3100.00m, Status = "Completed", SupplierId = 1, CreatedById = "U4" },
+               new Purchase { PurchaseId = 5, PurchaseDate = DateTime.Now.AddDays(-2), TotalAmount = 1200.00m, Status = "Pending", SupplierId = 2, CreatedById = "U5" }
+           );
         }
     }
 }
