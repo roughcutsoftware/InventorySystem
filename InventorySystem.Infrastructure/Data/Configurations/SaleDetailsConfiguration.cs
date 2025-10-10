@@ -23,7 +23,10 @@ namespace InventorySystem.Infrastructure.Data.Configurations
                .HasForeignKey(f => f.SaleId)
                .OnDelete(DeleteBehavior.NoAction);
 
-
+           builder.HasOne(s=>s.Product)
+                .WithMany(p=>p.SaleDetails)
+                .HasForeignKey(f=>f.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

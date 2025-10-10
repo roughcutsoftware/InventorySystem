@@ -21,17 +21,28 @@ namespace InventorySystem.Infrastructure.Data.Configurations
 
             
             builder.Property(p => p.QuantityInStock)
-                  .IsRequired();          
+                  .IsRequired();
+
+
+            //builder.HasMany(p => p.SaleDetails)
+            //      .WithOne(sd => sd.Product)
+            //      .HasForeignKey(sd => sd.ProductId)
+            //      .OnDelete(DeleteBehavior.NoAction);
 
            
-            builder.HasMany(p => p.SaleDetails)
-                  .WithOne(sd => sd.Product)
-                  .HasForeignKey(sd => sd.ProductId)
-                  .OnDelete(DeleteBehavior.NoAction);
-        
+
+            builder.HasOne(p=>p.Category)
+                .WithMany(p=>p.Products)
+                .HasForeignKey(p=>p.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(p=>p.Supplier)
+                .WithMany(p=>p.Products)
+                .HasForeignKey(p=>p.SupplierId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
-    }
+        }
     }
 
 }
