@@ -19,7 +19,7 @@ namespace InventorySystem.Core.Entities
 
 
         public Product Product { get; set; } = null!;
-        public Sale Sale { get; set; } = null!;
+        public Sales Sales { get; set; } = null!;
     }
 
 
