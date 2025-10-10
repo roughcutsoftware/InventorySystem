@@ -41,6 +41,74 @@ namespace InventorySystem.Infrastructure.Data.Configurations
                 .HasForeignKey(p=>p.SupplierId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasData(
+            new Product
+            {
+                
+                SupplierId = 1,
+                Name = "Smartphone",
+                CategoryId = 1,
+                UnitPrice = 12000,
+                CostPrice = 9000,
+                QuantityInStock = 50,
+                ReorderLevel = 10,
+                IsActive = true,
+                CreatedAt = new DateTime(2025, 10, 10)
+            },
+            new Product
+            {
+                
+                SupplierId = 1,
+                Name = "Laptop",
+                CategoryId = 1,
+                UnitPrice = 25000,
+                CostPrice = 20000,
+                QuantityInStock = 30,
+                ReorderLevel = 5,
+                IsActive = true,
+                CreatedAt = new DateTime(2025, 10, 10)
+            },
+            new Product
+            {
+               
+                SupplierId = 2,
+                Name = "T-shirt",
+                CategoryId = 2,
+                UnitPrice = 300,
+                CostPrice = 150,
+                QuantityInStock = 100,
+                ReorderLevel = 15,
+                IsActive = true,
+                CreatedAt = new DateTime(2025, 10, 10)
+            },
+            new Product
+            {
+                
+                SupplierId = 3,
+                Name = "Apple Juice",
+                CategoryId = 3,
+                UnitPrice = 50,
+                CostPrice = 25,
+                QuantityInStock = 200,
+                ReorderLevel = 20,
+                IsActive = true,
+                CreatedAt = new DateTime(2025, 10, 10)
+            },
+            new Product
+            {
+                
+                SupplierId = 4,
+                Name = "chair",
+                CategoryId = 4,
+                UnitPrice = 1000,
+                CostPrice = 100,
+                QuantityInStock = 15,
+                ReorderLevel = 10,
+                IsActive = true,
+                CreatedAt = new DateTime(2025, 10, 10)
+            }
+        );
+
 
         }
     }

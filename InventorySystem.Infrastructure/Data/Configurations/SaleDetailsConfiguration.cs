@@ -27,6 +27,54 @@ namespace InventorySystem.Infrastructure.Data.Configurations
                 .WithMany(p=>p.SaleDetails)
                 .HasForeignKey(f=>f.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasData(
+            new SaleDetails
+            {
+                
+                ProductId = 1,
+                SaleId = 1,
+                
+                Quantity = 2,
+                UnitPrice = 12000,
+                Subtotal = 24000
+            },
+            new SaleDetails
+            {
+                
+                ProductId = 2,
+                SaleId = 2,
+                Quantity = 1,
+                UnitPrice = 25000,
+                Subtotal = 25000
+            },
+            new SaleDetails
+            {
+                
+                ProductId = 3,
+                SaleId = 3,
+                Quantity = 5,
+                UnitPrice = 300,
+                Subtotal = 1500
+            },
+            new SaleDetails
+            {
+                
+                ProductId = 4,
+                SaleId = 4,
+                Quantity = 10,
+                UnitPrice = 50,
+                Subtotal = 500
+            },
+            new SaleDetails
+            {
+                
+                ProductId = 5,     
+                Quantity = 1,
+                UnitPrice = 1000,
+                Subtotal = 1000
+            }
+        );
         }
     }
 }
