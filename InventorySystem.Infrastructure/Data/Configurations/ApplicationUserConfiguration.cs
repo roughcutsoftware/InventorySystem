@@ -10,7 +10,7 @@ namespace InventorySystem.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            var hasher = new PasswordHasher<ApplicationUser>();
+            
 
             var users = new[]
             {
@@ -22,8 +22,8 @@ namespace InventorySystem.Infrastructure.Configurations
                     Email = "admin1@inventory.com",
                     NormalizedEmail = "ADMIN1@INVENTORY.COM",
                     EmailConfirmed = true,
-                    CreatedAt = DateTime.Now,
-                    PasswordHash = hasher.HashPassword(null, "Admin@123")
+                    CreatedAt = new DateTime(2025,10,7),
+                   
                 },
                 new ApplicationUser
                 {
@@ -33,8 +33,8 @@ namespace InventorySystem.Infrastructure.Configurations
                     Email = "admin2@inventory.com",
                     NormalizedEmail = "ADMIN2@INVENTORY.COM",
                     EmailConfirmed = true,
-                    CreatedAt = DateTime.Now,
-                    PasswordHash = hasher.HashPassword(null, "Admin@123")
+                    CreatedAt = new DateTime(2025,10,5),
+                    
                 },
                 new ApplicationUser
                 {
@@ -44,8 +44,8 @@ namespace InventorySystem.Infrastructure.Configurations
                     Email = "user1@inventory.com",
                     NormalizedEmail = "USER1@INVENTORY.COM",
                     EmailConfirmed = true,
-                    CreatedAt = DateTime.Now,
-                    PasswordHash = hasher.HashPassword(null, "User@123")
+                    CreatedAt = new DateTime(2025,10,6),
+                    
                 },
                 new ApplicationUser
                 {
@@ -55,8 +55,8 @@ namespace InventorySystem.Infrastructure.Configurations
                     Email = "user2@inventory.com",
                     NormalizedEmail = "USER2@INVENTORY.COM",
                     EmailConfirmed = true,
-                    CreatedAt = DateTime.Now,
-                    PasswordHash = hasher.HashPassword(null, "User@123")
+                    CreatedAt = new DateTime(2025,10,4),
+                   
                 },
                 new ApplicationUser
                 {
@@ -66,8 +66,8 @@ namespace InventorySystem.Infrastructure.Configurations
                     Email = "user3@inventory.com",
                     NormalizedEmail = "USER3@INVENTORY.COM",
                     EmailConfirmed = true,
-                    CreatedAt = DateTime.Now,
-                    PasswordHash = hasher.HashPassword(null, "User@123")
+                    CreatedAt = new DateTime(2025,10,5),
+                    
                 }
             };
 

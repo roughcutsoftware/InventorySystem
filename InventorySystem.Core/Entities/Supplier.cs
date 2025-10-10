@@ -7,13 +7,13 @@
         public string? ContactName { get; set; } 
         public string? CompanyName { get; set; } 
         public string? Email { get; set; } 
-        public int Phone { get; set; } // are you sure phone gonna be string not int ? 
+        public string? Phone { get; set; } 
         public string? Address { get; set; } 
         public bool IsActive { get; set; }
 
         //Nav props  i commented them until we implement these entities 
-        public ICollection<Purchase>? Purchases { get; set; }
-        public ICollection<Product>? Products { get; set; }
+        public ICollection<Purchase>? Purchases { get; set; } = new HashSet<Purchase>();
+        public ICollection<Product>? Products { get; set; } = new HashSet<Product>();
 
     }
 }

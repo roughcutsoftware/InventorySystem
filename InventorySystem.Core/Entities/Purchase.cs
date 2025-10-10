@@ -15,6 +15,6 @@ namespace InventorySystem.Core.Entities
 
         public ApplicationUser? CreatedBy { get; set; }
         public Supplier Supplier { get; set; } = null!;
-        public ICollection<PurchaseDetails> PurchaseDetails { get; set; } = new List<PurchaseDetails>();
+        public ICollection<PurchaseDetails> PurchaseDetails { get; set; } = new HashSet<PurchaseDetails>();
     }
 }

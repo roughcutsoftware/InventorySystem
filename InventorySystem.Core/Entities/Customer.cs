@@ -9,6 +9,6 @@
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
 
-        public ICollection<Sales> Sales { get; set; } = [];
+        public ICollection<Sales> Sales { get; set; } = new HashSet<Sales>();
     }
 }
