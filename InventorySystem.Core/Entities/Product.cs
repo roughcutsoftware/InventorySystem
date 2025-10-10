@@ -15,7 +15,7 @@ namespace InventorySystem.Core.Entities
         public decimal CostPrice { get; set; }
         public int? ReorderLevel { get; set; }
         public bool? IsActive { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
 
 
         public int CategoryId { get; set; }

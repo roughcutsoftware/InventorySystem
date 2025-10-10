@@ -20,7 +20,7 @@ namespace InventorySystem.Infrastructure.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<SaleDetails> SaleDetails { get; set; }
 
-        public DbSet<PurchaseDetails> purchaseDetails { get; set; }
+        public DbSet<PurchaseDetails> PurchaseDetails { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Sales> Sales { get; set; }
 
