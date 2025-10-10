@@ -44,6 +44,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             builder.HasData(
             new Product
             {
+                ProductId= 1,
                 
                 SupplierId = 1,
                 Name = "Smartphone",
@@ -57,7 +58,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new Product
             {
-                
+                ProductId = 2,
                 SupplierId = 1,
                 Name = "Laptop",
                 CategoryId = 1,
@@ -70,7 +71,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new Product
             {
-               
+                ProductId = 3,
                 SupplierId = 2,
                 Name = "T-shirt",
                 CategoryId = 2,
@@ -83,7 +84,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new Product
             {
-                
+                ProductId = 4,
                 SupplierId = 3,
                 Name = "Apple Juice",
                 CategoryId = 3,
@@ -96,7 +97,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new Product
             {
-                
+                ProductId = 5,
                 SupplierId = 4,
                 Name = "chair",
                 CategoryId = 4,

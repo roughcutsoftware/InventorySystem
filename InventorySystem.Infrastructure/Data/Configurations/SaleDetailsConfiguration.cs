@@ -31,7 +31,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             builder.HasData(
             new SaleDetails
             {
-                
+                SaleDetailId=1,
                 ProductId = 1,
                 SaleId = 1,
                 
@@ -41,7 +41,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new SaleDetails
             {
-                
+                SaleDetailId = 2,
                 ProductId = 2,
                 SaleId = 2,
                 Quantity = 1,
@@ -50,7 +50,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new SaleDetails
             {
-                
+                SaleDetailId = 3,
                 ProductId = 3,
                 SaleId = 3,
                 Quantity = 5,
@@ -59,7 +59,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new SaleDetails
             {
-                
+                SaleDetailId = 4,
                 ProductId = 4,
                 SaleId = 4,
                 Quantity = 10,
@@ -68,7 +68,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             },
             new SaleDetails
             {
-                
+                SaleDetailId = 5,
                 ProductId = 5,     
                 Quantity = 1,
                 UnitPrice = 1000,
