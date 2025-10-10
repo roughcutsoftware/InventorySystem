@@ -30,6 +30,18 @@ namespace InventorySystem.Infrastructure.Data.Configurations
                    .WithMany(u => u.Sales)
                    .HasForeignKey(s => s.CreatedBy)
                    .OnDelete(DeleteBehavior.NoAction);
+
+
+            //builder.HasData(
+            //       new Sales { SaleId = 1, SaleDate = new DateTime(2024, 1, 10), TotalAmount = 1500.75m, Status = "Completed", CustomerId = 1, CreatedBy = "U1" },
+            //       new Sales { SaleId = 2, SaleDate = new DateTime(2024, 2, 5), TotalAmount = 2200.50m, Status = "Pending", CustomerId = 2, CreatedBy = "U2" },
+            //       new Sales { SaleId = 3, SaleDate = new DateTime(2024, 3, 15), TotalAmount = 890.00m, Status = "Completed", CustomerId = 3, CreatedBy = "U3" },
+            //       new Sales { SaleId = 4, SaleDate = new DateTime(2024, 4, 20), TotalAmount = 4500.99m, Status = "Cancelled", CustomerId = 4, CreatedBy = "U3" },
+            //       new Sales{ SaleId = 5, SaleDate = new DateTime(2024, 5, 1), TotalAmount = 3200.10m, Status = "Completed", CustomerId = 5, CreatedBy = "U4" }
+            //       );
+
+
+
         }
         }
     }
