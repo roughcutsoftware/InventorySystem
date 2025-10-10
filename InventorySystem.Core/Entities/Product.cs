@@ -23,6 +23,7 @@ namespace InventorySystem.Core.Entities
 
 
         public Category Category { get; set; } = null!;
+        public Supplier Supplier { get; set; } = null;
         public ICollection<SaleDetails> SaleDetails { get; set; } = new HashSet<SaleDetails>();
         public ICollection<PurchaseDetails> PurchaseDetails { get; set; }
     }
