@@ -98,6 +98,9 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# Migrations folder
+**/Migrations/
+
 # Chutzpah Test files
 _Chutzpah*
 

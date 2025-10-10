@@ -121,22 +121,18 @@ namespace InventorySystem.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -206,7 +202,6 @@ namespace InventorySystem.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -254,7 +249,7 @@ namespace InventorySystem.Infrastructure.Migrations
 
                     b.HasIndex("PurchaseId");
 
-                    b.ToTable("purchaseDetails");
+                    b.ToTable("PurchaseDetails");
                 });
 
             modelBuilder.Entity("InventorySystem.Core.Entities.SaleDetails", b =>
