@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InventorySystem.Core.Entities
 {
-    internal class PurchaseDetails
+    public class PurchaseDetails
     {
         public int PurchaseDetailId { get; set; }
         public int Quantity { get; set; }
@@ -19,7 +19,7 @@ namespace InventorySystem.Core.Entities
         public int PurchaseId { get; set; }
 
         //Nav props  i commented them until we implement these entities 
-        //public Product? Product { get; set; }
-        //public Purchase? Purchase { get; set; }
+        public Product? Product { get; set; }
+        public Purchase? Purchase { get; set; }
     }
 }

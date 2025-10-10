@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InventorySystem.Core.Entities
 {
-    internal class Sales
+    public class Sales
     {
         public int SaleId { get; set; }
         public DateTime SaleDate { get; set; }
@@ -18,8 +18,8 @@ namespace InventorySystem.Core.Entities
         public int CreatedBy { get; set; } // UserId
 
         //Nav props  i commented them until we implement these entities 
-        //public Customer? Customer { get; set; }
-        //public User? User { get; set; }
-        //public ICollection<SaleDetail>? SaleDetails { get; set; }
+        public Customer? Customer { get; set; }
+        public ApplicationUser? User { get; set; }
+        public ICollection<SaleDetails>? SaleDetails { get; set; }
     }
 }

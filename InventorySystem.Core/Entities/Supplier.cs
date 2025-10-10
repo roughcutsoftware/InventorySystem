@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InventorySystem.Core.Entities
 {
-    internal class Supplier
+    public class Supplier
     {
         public int SupplierId { get; set; }
         public string? Name { get; set; } 
@@ -18,8 +18,8 @@ namespace InventorySystem.Core.Entities
         public bool IsActive { get; set; }
 
         //Nav props  i commented them until we implement these entities 
-        //public ICollection<Purchase>? Purchases { get; set; }
-        //public ICollection<Product>? Products { get; set; }
+        public ICollection<Purchase>? Purchases { get; set; }
+        public ICollection<Product>? Products { get; set; }
 
     }
 }

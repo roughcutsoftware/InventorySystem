@@ -12,9 +12,9 @@
 
         public ApplicationUser? User { get; set; }
 
-        //public Supplier Supplier { get; set; }
+        public Supplier Supplier { get; set; }
 
-        //public ICollection<PurchaseDetails> PurchaseDetails { get; set; } = new List<PurchaseDetails>();
+        public ICollection<PurchaseDetails> PurchaseDetails { get; set; } = new List<PurchaseDetails>();
 
     }
 }
