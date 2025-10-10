@@ -71,7 +71,7 @@ namespace InventorySystem.Infrastructure.Configurations
                 }
             };
 
-            builder.HasData(users);
+            //builder.HasData(users);
         }
     }
 }

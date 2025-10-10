@@ -22,13 +22,13 @@ namespace InventorySystem.Infrastructure.Data.Configurations
 
             builder.Property(c => c.Description)
                   .HasMaxLength(150);
-            builder.HasData(
-                       new Category { CategoryId = 1, Name = "Electronics", Description = "Devices and gadgets" },
-                       new Category { CategoryId = 2, Name = "Clothing", Description = "Men and women clothes" },
-                       new Category { CategoryId = 3, Name = "Groceries", Description = "Food and beverages" },
-                       new Category { CategoryId = 4, Name = "Furniture", Description = "Home and office furniture" },
-                       new Category { CategoryId = 5, Name = "Sports", Description = "Sportswear and equipment" }
-                   );
+            //builder.HasData(
+            //           new Category { CategoryId = 1, Name = "Electronics", Description = "Devices and gadgets" },
+            //           new Category { CategoryId = 2, Name = "Clothing", Description = "Men and women clothes" },
+            //           new Category { CategoryId = 3, Name = "Groceries", Description = "Food and beverages" },
+            //           new Category { CategoryId = 4, Name = "Furniture", Description = "Home and office furniture" },
+            //           new Category { CategoryId = 5, Name = "Sports", Description = "Sportswear and equipment" }
+            //       );
 
             //builder.HasMany(c => c.Products)
             //      .WithOne(p => p.Category)

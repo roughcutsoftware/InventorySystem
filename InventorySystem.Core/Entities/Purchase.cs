@@ -8,7 +8,7 @@ namespace InventorySystem.Core.Entities
         public int PurchaseId { get; set; }
         public DateTime PurchaseDate { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public string? Status { get; set; } 
 
         public string? CreatedById { get; set; }
         public int SupplierId { get; set; }

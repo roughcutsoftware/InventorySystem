@@ -1,7 +1,10 @@
+using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,9 @@ builder.Services.AddDbContext<AppDBContext>(
         ));
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDBContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
