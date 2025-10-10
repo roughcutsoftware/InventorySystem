@@ -18,6 +18,12 @@ namespace InventorySystem.Infrastructure.Data.Configurations
             builder.Property(sd => sd.Quantity)
                   .IsRequired();
 
+            builder.HasOne(s => s.Sales)
+               .WithMany(p => p.SaleDetails)
+               .HasForeignKey(f => f.SaleId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+
         }
     }
 }
