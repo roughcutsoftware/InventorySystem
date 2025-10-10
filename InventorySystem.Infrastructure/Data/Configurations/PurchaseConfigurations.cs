@@ -25,7 +25,7 @@ namespace InventorySystem.Infrastructure.Data.Configurations
 
             builder.HasOne(p => p.User)
                    .WithMany(u => u.Purchases)
-                   .HasForeignKey(p => p.CreatedBy)
+                   .HasForeignKey(p => p.CreatedById)
                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
