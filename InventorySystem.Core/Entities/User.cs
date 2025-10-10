@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace InventorySystem.Core.Entities
+﻿namespace InventorySystem.Core.Entities
 {
-    internal class User
-    {
+    public class User
+        {
+            public int UserId { get; set; }
+
+            public string Username { get; set; } = string.Empty;
+            public string PasswordHash { get; set; } = string.Empty;
+            public string Role { get; set; } = "User";
+
+            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+            public ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
+            //public ICollection<Sales> Sales { get; set; } = new List<Sales>();
     }
 }
