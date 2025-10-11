@@ -61,8 +61,7 @@ namespace InventorySystem.Infrastructure.Repositories
 
         void IRepository<Supplier>.Update(Supplier obj)
         {
-            var existingSupplier = _context.Suppliers
-       .FirstOrDefault(s => s.SupplierId == obj.SupplierId);
+            var existingSupplier = _context.Suppliers.FirstOrDefault(s => s.SupplierId == obj.SupplierId);
 
             if (existingSupplier != null)
             {

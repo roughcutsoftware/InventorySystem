@@ -8,7 +8,9 @@ namespace InventorySystem.web.Mapping
     {
         public AutoMapperProfile()
         {
-             CreateMap<Supplier, SupplierDto>().ReverseMap();
+            CreateMap<Supplier, SupplierDto>().ReverseMap();
+            CreateMap<Purchase, PurchaseOrderDto>().ReverseMap();
+            CreateMap<PurchaseDetails, PurchaseDetailDto>().ReverseMap();
         }
     }
 }
