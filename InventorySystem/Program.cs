@@ -58,17 +58,17 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<AppDBContext>();
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var logger = services.GetRequiredService<ILogger<Program>>();
+//    var context = services.GetRequiredService<AppDBContext>();
+//    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+//    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+//    var logger = services.GetRequiredService<ILogger<Program>>();
 
-    await DbSeeder.InitializeAsync(context, userManager, roleManager, logger);
-}
+//    await DbSeeder.InitializeAsync(context, userManager, roleManager, logger);
+//}
 
 
 app.Run();
