@@ -9,12 +9,9 @@ namespace InventorySystem.Infrastructure.Repositories
     public class SupplierRepository : ISupplierRepository
     {
         private readonly AppDBContext _context;
-        private readonly IMapper _mapper;
-
-        public SupplierRepository(AppDBContext context,IMapper mapper)
+        public SupplierRepository(AppDBContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         void IRepository<Supplier>.Add(Supplier obj)
@@ -65,11 +62,17 @@ namespace InventorySystem.Infrastructure.Repositories
         void IRepository<Supplier>.Update(Supplier obj)
         {
             var existingSupplier = _context.Suppliers
-               .FirstOrDefault(s => s.SupplierId == obj.SupplierId);
-            if(existingSupplier != null)
+       .FirstOrDefault(s => s.SupplierId == obj.SupplierId);
+
+            if (existingSupplier != null)
             {
-                _mapper.Map(obj, existingSupplier);
-                _context.Update(existingSupplier);
+                existingSupplier.Name = obj.Name;
+                existingSupplier.ContactName = obj.ContactName;
+                existingSupplier.CompanyName = obj.CompanyName;
+                existingSupplier.Email = obj.Email;
+                existingSupplier.Phone = obj.Phone;
+                existingSupplier.Address = obj.Address;
+                existingSupplier.IsActive = obj.IsActive;
             }
         }
     }

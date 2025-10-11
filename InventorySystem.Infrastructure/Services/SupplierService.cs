@@ -1,33 +1,51 @@
-﻿using InventorySystem.Core.DTOs;
+﻿using AutoMapper;
+using InventorySystem.Core.DTOs;
+using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces;
+using InventorySystem.Core.Interfaces.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
     public class SupplierService : ISupplierService
     {
-        public Task AddSupplierAsync(SupplierDto dto)
-        {
-            throw new NotImplementedException();
+        private readonly ISupplierRepository _supplierRepository;
+        private readonly IMapper _mapper;
+
+        public SupplierService(ISupplierRepository repository, IMapper mapper) {
+            _supplierRepository = repository;
+            _mapper = mapper;
         }
 
-        public Task DeleteSupplierAsync(int id)
+        public void AddSupplier(SupplierDto dto)
         {
-            throw new NotImplementedException();
+            _supplierRepository.Add(_mapper.Map<Supplier>(dto));
+            _supplierRepository.SaveChanges();
         }
 
-        public Task<IEnumerable<SupplierDto>> GetAllSuppliersAsync()
+        public void DeleteSupplier(int id)
         {
-            throw new NotImplementedException();
+            _supplierRepository.Delete(id);
+            _supplierRepository.SaveChanges();
         }
 
-        public Task<SupplierDto?> GetSupplierByIdAsync(int id)
+        public List<SupplierDto> GetAllSuppliers(int size = 20, int pageNumber = 1)
         {
-            throw new NotImplementedException();
+            var supplires = _supplierRepository.GetAll(size, pageNumber);
+            return _mapper.Map<List<SupplierDto>>(supplires);
         }
 
-        public Task UpdateSupplierAsync(SupplierDto dto)
+        public SupplierDto? GetSupplierById(int id)
         {
-            throw new NotImplementedException();
+            var supplier = _supplierRepository.GetByID(id);
+            if (supplier == null)
+                return null;
+            return _mapper.Map<SupplierDto>(supplier);
+        }
+
+        public void UpdateSupplier(SupplierDto dto)
+        {
+            _supplierRepository.Update(_mapper.Map<Supplier>(dto));
+            _supplierRepository.SaveChanges();
         }
     }
 }
