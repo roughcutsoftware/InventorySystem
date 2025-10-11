@@ -11,7 +11,6 @@
         public string? Address { get; set; } 
         public bool IsActive { get; set; }
 
-        //Nav props  i commented them until we implement these entities 
         public ICollection<Purchase>? Purchases { get; set; } = new HashSet<Purchase>();
         public ICollection<Product>? Products { get; set; } = new HashSet<Product>();
 

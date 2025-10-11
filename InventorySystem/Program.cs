@@ -1,8 +1,9 @@
 using InventorySystem.Core.Entities;
+using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
-using InventorySystem.Infrastructure.Seeding;
+using InventorySystem.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDBContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 var app = builder.Build();
 
