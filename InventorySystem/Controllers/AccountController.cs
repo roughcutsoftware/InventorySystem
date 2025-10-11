@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Core.Entities;
+using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.web.View_Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +9,12 @@ namespace InventorySystem.web.Controllers
     [AutoValidateAntiforgeryToken]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IAuthService _authService;
 
-        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager)
+        public AccountController(IAuthService authService)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            _authService = authService;
         }
-
-        public UserManager<ApplicationUser> UserManager { get; }
 
         [HttpGet]
         public IActionResult Login()
@@ -30,26 +27,21 @@ namespace InventorySystem.web.Controllers
         {
             if(ModelState.IsValid)
             {
-                ApplicationUser user = await userManager.FindByEmailAsync(loginViewModel.Email);
-                if (user != null)
-                {
-                    bool found = await userManager.CheckPasswordAsync(user, loginViewModel.Password);
-                    if (found) 
-                    {
-                        await signInManager.SignInAsync(user, loginViewModel.RememberMe);
-                        return RedirectToAction("Index", "Home");
-                    }
+                var result = await _authService.LoginAsync(
+                    loginViewModel.Email,
+                    loginViewModel.Password,
+                    loginViewModel.RememberMe);
+                if (result.Succeeded) {
+                    return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("", "Invalid Username or Password");
-
-
+                ModelState.AddModelError("", result.ErrorMessage);
             }
             return View("Login",loginViewModel);
         }
-
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
+            await _authService.LogoutAsync();
             return RedirectToAction("Login");
         }
 
