@@ -4,6 +4,7 @@ using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
 using InventorySystem.Infrastructure.Services;
+using InventorySystem.web.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
 
 var app = builder.Build();
 

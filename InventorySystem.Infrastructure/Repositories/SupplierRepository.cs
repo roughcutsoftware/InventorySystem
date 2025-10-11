@@ -1,49 +1,76 @@
-﻿using InventorySystem.Core.Entities;
+﻿using AutoMapper;
+using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace InventorySystem.Infrastructure.Repositories
 {
     public class SupplierRepository : ISupplierRepository
     {
         private readonly AppDBContext _context;
+        private readonly IMapper _mapper;
 
-        public SupplierRepository(AppDBContext context)
+        public SupplierRepository(AppDBContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-
 
         void IRepository<Supplier>.Add(Supplier obj)
         {
-            throw new NotImplementedException();
+            _context.Suppliers.Add(obj);
         }
 
         void IRepository<Supplier>.Delete(int id)
         {
-            throw new NotImplementedException();
+            var supplier = _context.Suppliers.Find(id);
+
+            if(supplier != null)
+            {
+                _context.Suppliers.Remove(supplier);
+            }
         }
 
         List<Supplier> IRepository<Supplier>.GetAll(int size, int pageNumber, string includes)
         {
-            throw new NotImplementedException();
+            IQueryable<Supplier> suppliers = _context.Suppliers;
+            if (!String.IsNullOrEmpty(includes))
+            {
+                suppliers = suppliers.Include(includes);
+            }
+            return suppliers.Skip((pageNumber - 1) * size)
+                .Take(size)
+                .AsNoTracking()
+                .ToList();
         }
 
         Supplier? IRepository<Supplier>.GetByID(int id, string include)
         {
-            throw new NotImplementedException();
+            IQueryable<Supplier> supplier = _context.Suppliers;
+
+            if (!String.IsNullOrEmpty(include))
+            {
+                supplier = supplier.Include(include);
+            }
+
+            return supplier.FirstOrDefault(s=>s.SupplierId == id);
         }
 
         void IRepository<Supplier>.SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
         }
 
         void IRepository<Supplier>.Update(Supplier obj)
         {
-            throw new NotImplementedException();
+            var existingSupplier = _context.Suppliers
+               .FirstOrDefault(s => s.SupplierId == obj.SupplierId);
+            if(existingSupplier != null)
+            {
+                _mapper.Map(obj, existingSupplier);
+                _context.Update(existingSupplier);
+            }
         }
     }
 }
