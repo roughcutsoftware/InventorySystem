@@ -3,6 +3,7 @@ using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
+using InventorySystem.Infrastructure.Seeding;
 using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.Mapping;
 using Microsoft.AspNetCore.Identity;
@@ -51,7 +52,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Account}/{action=Login}")
     .WithStaticAssets();
 
 //using (var scope = app.Services.CreateScope())

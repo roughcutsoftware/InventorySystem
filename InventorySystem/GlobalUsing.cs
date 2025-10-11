@@ -1,0 +1,1 @@
+﻿global using InventorySystem.web.View_Models;
