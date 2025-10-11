@@ -29,6 +29,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDBContext>()
 .AddDefaultTokenProviders();
 
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
