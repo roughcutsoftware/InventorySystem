@@ -1,0 +1,84 @@
+﻿@using InventorySystem.Core.DTOs
+@model InventorySystem.web.View_Models.Product_ViewModel
+
+@{
+    ViewData["Title"] = "Add New Product";
+}
+
+<h2 class="mb-4">Add New Product</h2>
+
+<form asp-action="AddNewProduct" method="post">
+    <div class="card shadow-sm p-4">
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label asp-for="Product.Name" class="form-label"></label>
+                <input asp-for="Product.Name" class="form-control" />
+                <span asp-validation-for="Product.Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.QuantityInStock" class="form-label"></label>
+                <input asp-for="Product.QuantityInStock" class="form-control" />
+                <span asp-validation-for="Product.QuantityInStock" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.UnitPrice" class="form-label"></label>
+                <input asp-for="Product.UnitPrice" class="form-control" />
+                <span asp-validation-for="Product.UnitPrice" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.CostPrice" class="form-label"></label>
+                <input asp-for="Product.CostPrice" class="form-control" />
+                <span asp-validation-for="Product.CostPrice" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.ReorderLevel" class="form-label"></label>
+                <input asp-for="Product.ReorderLevel" class="form-control" />
+                <span asp-validation-for="Product.ReorderLevel" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.IsActive" class="form-label"></label>
+                <select asp-for="Product.IsActive" class="form-select">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+                <span asp-validation-for="Product.IsActive" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.CategoryId" class="form-label">Category</label>
+                <select asp-for="Product.CategoryId"
+                        class="form-select"
+                        asp-items="@(new SelectList(Model.Categories, nameof(CategoryDto.CategoryId), nameof(CategoryDto.Name)))">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Product.SupplierId" class="form-label">Supplier</label>
+                <select asp-for="Product.SupplierId"
+                        class="form-select"
+                        asp-items="@(new SelectList(Model.Suppliers, nameof(SupplierDto.SupplierId), nameof(SupplierDto.Name)))">
+                    <option value="">-- Select Supplier --</option>
+                </select>
+                <span asp-validation-for="Product.SupplierId" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="mt-4 text-end">
+            <button type="submit" class="btn btn-primary px-4 me-2">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
