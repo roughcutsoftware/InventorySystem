@@ -39,6 +39,9 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 
+builder.Services.AddScoped<ISalesRepository, SalesRepository>();
+
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 
