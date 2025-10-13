@@ -49,8 +49,7 @@ namespace InventorySystem.Infrastructure.Services
             } else
             {
                 return null;
-            }
-            
+            } 
         }
 
         public void UpdateProduct(ProductDto dto)
