@@ -1,0 +1,48 @@
+﻿@model InventorySystem.Core.DTOs.ProductDto
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h2 class="mb-4">Product Details</h2>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Product ID</dt>
+            <dd class="col-sm-9">@Model.ProductId</dd>
+
+            <dt class="col-sm-3">Product Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Quantity In Stock</dt>
+            <dd class="col-sm-9">@Model.QuantityInStock</dd>
+
+            <dt class="col-sm-3">Unit Price</dt>
+            <dd class="col-sm-9">@Model.UnitPrice.ToString("C")</dd>
+
+            <dt class="col-sm-3">Cost Price</dt>
+            <dd class="col-sm-9">@Model.CostPrice.ToString("C")</dd>
+
+            <dt class="col-sm-3">Reorder Level</dt>
+            <dd class="col-sm-9">@Model.ReorderLevel</dd>
+
+            <dt class="col-sm-3">Active</dt>
+            <dd class="col-sm-9">@((Model.IsActive ?? false) ? "Yes" : "No")</dd>
+
+            <dt class="col-sm-3">Created At</dt>
+            <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd")</dd>
+
+            <dt class="col-sm-3">Category ID</dt>
+            <dd class="col-sm-9">@Model.CategoryId</dd>
+
+            <dt class="col-sm-3">Supplier ID</dt>
+            <dd class="col-sm-9">@Model.SupplierId</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-warning me-2">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
