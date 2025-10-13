@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace InventorySystem.Core.Interfaces.Repositories
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface ISaleDetailRepository
     {
-        List<Product> GetAllWithCategoryAndSupplier();
-
+        List<SaleDetails> GetSalesWithinDateRange(DateTime from, DateTime to);
     }
 }

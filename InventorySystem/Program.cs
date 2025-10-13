@@ -41,8 +41,14 @@ builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<IPurchaseService, PurchaseService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IPurchaseDetailRepository, PurchaseDetailRepository>();
+builder.Services.AddScoped<ISaleDetailRepository, SaleDetailRepository>();
+
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(InventoryProfile).Assembly);
+
 
 
 var app = builder.Build();
