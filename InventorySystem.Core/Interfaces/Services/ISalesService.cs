@@ -8,7 +8,7 @@ namespace InventorySystem.Core.Interfaces.Services
         void CreateSalesOrder(SalesDto dto);
         IEnumerable<Sales> GetAllSales(int size, int pageNumber);
         SalesDto? GetSalesById(int id);
-        void ReduceStockAsync(int productId, int quantity); 
-        void CancelSaleAsync(int salesId);
+        void ReduceStock(int productId, int quantity); 
+        void CancelSale(int salesId);
     }
 }

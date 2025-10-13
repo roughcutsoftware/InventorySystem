@@ -8,18 +8,21 @@ using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
-    public class SalesService :ISalesService
+    public class SalesService : ISalesService
     {
         private readonly ISalesRepository _salesRepository;
         private readonly IMapper _mapper;
-        public SalesService(ISalesRepository repository, IMapper mapper)
+        private readonly IProductRepository _productRepository;
+
+        public SalesService(ISalesRepository repository, IMapper mapper, IProductRepository productRepository)
         {
             _salesRepository = repository;
             _mapper = mapper;
+            _productRepository = productRepository;
         }
 
 
-      
+
 
         public void CreateSalesOrder(SalesDto dto)
         {
@@ -30,8 +33,27 @@ namespace InventorySystem.Infrastructure.Services
 
             sale.SaleDetails = dto.SaleDetails
                 .Select(d=>_mapper.Map<SaleDetails>(d)).ToList();
+
+
+            foreach (var detail in sale.SaleDetails)
+            {
+                var product = _productRepository.GetByID(detail.ProductId);
+                if (product != null)
+                {
+                    if (product.QuantityInStock < detail.Quantity)
+                    {
+                        throw new InvalidOperationException($"Not enough stock for {product.Name}");
+                    }
+
+                    product.QuantityInStock -= detail.Quantity;
+                    _productRepository.Update(product);
+                }
+            }
+
+
             _salesRepository.Add(sale);
             _salesRepository.SaveChanges();
+            _productRepository.SaveChanges();
 
         }
 
@@ -51,57 +73,38 @@ namespace InventorySystem.Infrastructure.Services
         }
 
 
-        public void CancelSales(int salesId)
+        public void CancelSale(int salesId)
         {
              var sale = _salesRepository.GetByID(salesId);
             if (sale == null)  return;
             sale.Status = "Cancelled";
+
+
+            foreach (var detail in sale.SaleDetails)
+            {
+                var product = _productRepository.GetByID(detail.ProductId);
+                if (product != null)
+                {
+                    product.QuantityInStock += detail.Quantity;
+                    _productRepository.Update(product);
+                }
+            }
+
             _salesRepository.Update(sale);
             _salesRepository.SaveChanges();
+            _productRepository.SaveChanges();
         }
 
-
-
-
-        //public void ReceiveStock(int purchaseId)
-        //{
-        //    var purchase = _purchaseRepository.GetByID(purchaseId, "PurchaseDetails");
-        //    if (purchase == null)
-        //        return;
-
-        //    //foreach (var detail in purchase.PurchaseDetails)
-        //    //{
-        //    //    var product = _productRepository.GetByID(detail.ProductId);
-        //    //    if (product != null)
-        //    //    {
-        //    //        product.QuantityInStock += detail.Quantity;
-        //    //        _productRepository.Update(product);
-        //    //    }
-        //    //}
-
-        //    purchase.Status = "Received";
-        //    _purchaseRepository.Update(purchase);
-        //    _purchaseRepository.SaveChanges();
-        //    //_productRepository.SaveChanges();
-        //}
-
-
-        public void ReduceStock(int salesId,int quantity)
+        public void ReduceStock(int productId, int quantity)
         {
-
+            var product = _productRepository.GetByID(productId);
+            if (product != null)
+            {
+                product.QuantityInStock -= quantity;
+                _productRepository.Update(product);
+                _productRepository.SaveChanges();
+            }
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 }
