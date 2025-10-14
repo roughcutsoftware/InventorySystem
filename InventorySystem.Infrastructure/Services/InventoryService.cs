@@ -2,11 +2,6 @@
 using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -17,18 +12,20 @@ namespace InventorySystem.Infrastructure.Services
         private readonly ISaleDetailRepository salesRepo;
         private readonly IMapper mapper;
         private readonly ILogService logService;
+        private readonly INotificationService _notificationService;
 
         public InventoryService(
             IProductRepository productRepo,
             IPurchaseDetailRepository purchaseRepo,
             ISaleDetailRepository salesRepo,
-            IMapper mapper,ILogService logService)
+            IMapper mapper,ILogService logService, INotificationService notificationService)
         {
-           this.productRepo = productRepo;
+            this.productRepo = productRepo;
             this.purchaseRepo = purchaseRepo;
             this.salesRepo = salesRepo;
             this.mapper = mapper;
             this.logService = logService;
+            _notificationService = notificationService;
         }
 
         public List<ProductStockDto> GetStockLevels()
@@ -61,6 +58,10 @@ namespace InventorySystem.Infrastructure.Services
             string user = "Admin";
             logService.LogAction(action, details, user);
 
+            if (product.QuantityInStock <= product.ReorderLevel)
+            {
+                _notificationService.NotifyLowStock(product);
+            }
 
 
         }

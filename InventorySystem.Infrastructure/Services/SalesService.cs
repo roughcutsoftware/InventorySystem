@@ -4,7 +4,6 @@ using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
-using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -13,12 +12,14 @@ namespace InventorySystem.Infrastructure.Services
         private readonly ISalesRepository _salesRepository;
         private readonly IMapper _mapper;
         private readonly IProductRepository _productRepository;
+        private readonly INotificationService _notificationService;
 
-        public SalesService(ISalesRepository repository, IMapper mapper, IProductRepository productRepository)
+        public SalesService(ISalesRepository repository, IMapper mapper, IProductRepository productRepository, INotificationService notificationService)
         {
             _salesRepository = repository;
             _mapper = mapper;
             _productRepository = productRepository;
+            _notificationService = notificationService;
         }
 
 
@@ -47,6 +48,12 @@ namespace InventorySystem.Infrastructure.Services
 
                     product.QuantityInStock -= detail.Quantity;
                     _productRepository.Update(product);
+
+                    if (product.QuantityInStock <= product.ReorderLevel)
+                    {
+                        _notificationService.NotifyLowStock(product);
+                    }
+
                 }
             }
 
@@ -103,6 +110,11 @@ namespace InventorySystem.Infrastructure.Services
                 product.QuantityInStock -= quantity;
                 _productRepository.Update(product);
                 _productRepository.SaveChanges();
+                if (product.QuantityInStock <= product.ReorderLevel)
+                {
+                    _notificationService.NotifyLowStock(product);
+                }
+
             }
         }
 

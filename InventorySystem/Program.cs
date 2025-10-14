@@ -73,18 +73,10 @@ builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
-
-
 builder.Services.AddScoped<IReportService, ReportService>();
 
-
-
-
-
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-builder.Services.AddAutoMapper(typeof(InventoryProfile).Assembly);
-
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(AutoMapperProfile)));
+builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(InventoryProfile)));
 
 var app = builder.Build();
 
