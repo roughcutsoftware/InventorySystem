@@ -1,4 +1,5 @@
 using InventorySystem.Core.Entities;
+using InventorySystem.Core.Hubs;
 using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
@@ -37,6 +38,8 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddSignalR();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
@@ -50,11 +53,11 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
-
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 
 
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(AutoMapperProfile)));
 
 var app = builder.Build();
 
@@ -65,12 +68,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapControllerRoute(
     name: "default",

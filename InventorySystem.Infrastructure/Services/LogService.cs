@@ -5,16 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace InventorySystem.Infrastructure.Services
 {
-    public class LogService:ILogService
+    public class LogService(ILogRepository logRepo, ILogger<LogService> fileLogger) : ILogService
     {
-        private readonly ILogRepository _logRepo;
-        private readonly ILogger<LogService> _fileLogger;
-
-        public LogService(ILogRepository logRepo, ILogger<LogService> fileLogger)
-        {
-            _logRepo = logRepo;
-            _fileLogger = fileLogger;
-        }
+        private readonly ILogRepository _logRepo = logRepo;
+        private readonly ILogger<LogService> _fileLogger = fileLogger;
 
         public void LogAction(string user, string action, string details)
         {
