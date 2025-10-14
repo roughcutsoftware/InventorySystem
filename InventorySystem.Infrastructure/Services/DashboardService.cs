@@ -2,11 +2,6 @@
 using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -20,10 +15,10 @@ namespace InventorySystem.Infrastructure.Services
 
 
 
-        public DashboardService(IProductRepository productRepository , 
+        public DashboardService(IProductRepository productRepository,
             ISupplierRepository supplierRepository,
-            ISalesRepository salesRepository ,
-            IPurchaseRepository purchaseRepository , IMapper mapper)
+            ISalesRepository salesRepository,
+            IPurchaseRepository purchaseRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _supplierRepository = supplierRepository;
@@ -33,51 +28,87 @@ namespace InventorySystem.Infrastructure.Services
         }
 
 
-        public DashboardSummaryDto GetDashboardSummary(DateTime from, DateTime to)
+        //total product count 
+
+        public int GetTotalProducts()
         {
-            //total product count 
-            var totalProducts = _productRepository.GetAll().Count();
+            return _productRepository.GetAll().Count;
+        }
 
-            //total supplierss count 
-            var totalSuppliers = _supplierRepository.GetAll().Count();
+        //total supplierss count 
+        public int GetTotalSuppliers()
+        {
+            return _supplierRepository.GetAll().Count;
+        }
 
-            //اجمالي قيمة المبيعات  من و الي  
+
+        //اجمالي قيمة المبيعات  من و الي
+        public decimal GetTotalSales(DateTime from, DateTime to)
+        {
             var sales = _salesRepository.GetAll()
-                .Where(s=>s.SaleDate >= from && s.SaleDate <= to)
+                .Where(s => s.SaleDate >= from && s.SaleDate <= to)
                 .ToList();
-            var totalSalesAmount = sales.Sum(s => s.TotalAmount);
+
+            return sales.Sum(s => s.TotalAmount);
+        }
 
 
-            // اجمالي قيمة المشتريات من و الي 
-            var purchases =_purchaseRepository.GetAll()
-                .Where(p=>p.PurchaseDate>=from&&p.PurchaseDate<=to)
+        // اجمالي قيمة المشتريات من و الي
+        public decimal GetTotalPurchases(DateTime from, DateTime to)
+        {
+            var purchases = _purchaseRepository.GetAll()
+                .Where(p => p.PurchaseDate >= from && p.PurchaseDate <= to)
                 .ToList();
-            var totalPurchaseAmount = purchases.Sum(p => p.TotalAmount);
+
+            return purchases.Sum(p => p.TotalAmount);
+        }
 
 
-            // عدد المنتجات اللي مخزونها قليل يعني تحت الليفيل 
-            var lowStockCount = _productRepository.GetAll()
-                .Count(p=>p.QuantityInStock <= p.ReorderLevel);
+
+        // عدد المنتجات اللي مخزونها قليل يعني تحت الليفيل 
+        public int GetLowStockCount()
+        {
+            return _productRepository.GetAll()
+                .Count(p => p.QuantityInStock <= p.ReorderLevel);
+        }
 
 
-            //حساب الارباح
-            var revenue = totalSalesAmount;
-            var costOfGoodsSold = totalPurchaseAmount;
-            var grossProfit = revenue - costOfGoodsSold;
-            var grossMarginPercent = revenue != 0 ? (grossProfit / revenue) * 100 : 0;
+        public ProfitSummaryDto GetProfitSummary(DateTime from, DateTime to)
+        {
+            var revenue = GetTotalSales(from, to);
+            var cost = GetTotalPurchases(from, to);
+            var profit = revenue - cost;
+            var percent = revenue != 0 ? (profit / revenue) * 100 : 0;
 
+            return new ProfitSummaryDto
+            {
+                Revenue = revenue,
+                CostOfGoodsSold = cost,
+                GrossProfit = profit,
+                GrossMarginPercent = Math.Round(percent, 2)
+            };
 
-            var dashboard = new DashboardSummaryDto {
+        }
+
+             public DashboardSummaryDto GetDashboardSummary(DateTime from, DateTime to)
+        {
+            var dashboard = new DashboardSummaryDto
+            {
                 From = from,
                 To = to,
-                TotalProducts = totalProducts,
-                TotalSuppliers = totalSuppliers,
-                TotalSales = totalSalesAmount,
-                TotalPurchases = totalPurchaseAmount,
-                LowStockCount = lowStockCount,
-                ProfitSummary = new ProfitSummaryDto()
+                TotalProducts = GetTotalProducts(),
+                TotalSuppliers = GetTotalSuppliers(),
+                TotalSales = GetTotalSales(from, to),
+                TotalPurchases = GetTotalPurchases(from, to),
+                LowStockCount = GetLowStockCount(),
+                ProfitSummary = GetProfitSummary(from, to)
             };
+
             return dashboard;
         }
+
+
+     
     }
-}
+    }
+
