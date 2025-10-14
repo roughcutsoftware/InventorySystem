@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using InventorySystem.Core.DTOs;
+﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
 
@@ -11,20 +10,18 @@ namespace InventorySystem.Infrastructure.Services
         private readonly ISupplierRepository _supplierRepository;
         private readonly ISalesRepository _salesRepository;
         private readonly IPurchaseRepository _purchaseRepository;
-        private readonly IMapper _mapper;
 
 
 
         public DashboardService(IProductRepository productRepository,
             ISupplierRepository supplierRepository,
             ISalesRepository salesRepository,
-            IPurchaseRepository purchaseRepository, IMapper mapper)
+            IPurchaseRepository purchaseRepository)
         {
             _productRepository = productRepository;
             _supplierRepository = supplierRepository;
             _salesRepository = salesRepository;
             _purchaseRepository = purchaseRepository;
-            _mapper = mapper;
         }
 
 
