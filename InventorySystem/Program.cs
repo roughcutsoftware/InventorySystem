@@ -1,17 +1,32 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Hubs;
 using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Core.Services.Implementations;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
 using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.Mapping;
+using InventorySystem.Web.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
+
+var context = new CustomAssemblyLoadContext();
+context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "lib", "libwkhtmltox.dll"));
+
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
+
+
+
+
 
 builder.Services.AddControllersWithViews();
 
@@ -57,6 +72,13 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 
 
+builder.Services.AddScoped<IReportService, ReportService>();
+
+
+
+
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(AutoMapperProfile)));
 
 var app = builder.Build();
