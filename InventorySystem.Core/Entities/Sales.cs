@@ -11,7 +11,6 @@
         public int CustomerId { get; set; }
         public string? CreatedBy { get; set; } // UserId
 
-        //Nav props  i commented them until we implement these entities 
         public Customer? Customer { get; set; }
         public ApplicationUser? User { get; set; }
         public ICollection<SaleDetails>? SaleDetails { get; set; } = new HashSet<SaleDetails>();

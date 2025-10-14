@@ -51,6 +51,9 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
 
+builder.Services.AddScoped<ISalesRepository, SalesRepository>();
+
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 var app = builder.Build();
