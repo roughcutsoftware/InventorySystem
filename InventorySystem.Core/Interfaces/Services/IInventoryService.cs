@@ -11,7 +11,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         List<ProductStockDto> GetStockLevels();
         List<ProductStockDto> GetLowStockItems();
-        void AdjustStock(int productId, int quantity);// We can add reason and logg adjusting process later
+        void AdjustStock(int productId, int quantity, string reason );
         List<InventoryReportDto> GenerateStockReport(DateTime from, DateTime to);
     }
 }

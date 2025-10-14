@@ -16,19 +16,19 @@ namespace InventorySystem.Infrastructure.Services
         private readonly IPurchaseDetailRepository purchaseRepo;
         private readonly ISaleDetailRepository salesRepo;
         private readonly IMapper mapper;
-
-        
+        private readonly ILogService logService;
 
         public InventoryService(
             IProductRepository productRepo,
             IPurchaseDetailRepository purchaseRepo,
             ISaleDetailRepository salesRepo,
-            IMapper mapper)
+            IMapper mapper,ILogService logService)
         {
            this.productRepo = productRepo;
             this.purchaseRepo = purchaseRepo;
             this.salesRepo = salesRepo;
             this.mapper = mapper;
+            this.logService = logService;
         }
 
         public List<ProductStockDto> GetStockLevels()
@@ -47,16 +47,22 @@ namespace InventorySystem.Infrastructure.Services
             return mapper.Map<List<ProductStockDto>>(lowStockProducts);
         }
 
-        public void AdjustStock(int productId, int quantity)
+        public void AdjustStock(int productId, int quantity, string reason)
         {
             var product = productRepo.GetByID(productId);
             if (product == null)
                 throw new Exception("Product not found");
-
+            int oldStock = product.QuantityInStock;
             product.QuantityInStock += quantity;
             productRepo.Update(product);
+            productRepo.SaveChanges();
+            string action = "AdjustStock";
+            string details = $"Product: {product.Name}, Old Stock: {oldStock}, Change: {quantity}, New Stock: {product.QuantityInStock}, Reason: {reason}";
+            string user = "Admin";
+            logService.LogAction(action, details, user);
 
-            
+
+
         }
 
         public List<InventoryReportDto> GenerateStockReport(DateTime from, DateTime to)
@@ -86,5 +92,7 @@ namespace InventorySystem.Infrastructure.Services
 
             return report;
         }
+
+        
     }
 }
