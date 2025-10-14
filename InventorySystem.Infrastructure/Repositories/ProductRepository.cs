@@ -80,5 +80,13 @@ namespace InventorySystem.Infrastructure.Repositories
                 prd.SupplierId = obj.SupplierId;
             }
         }
+
+        public List<Product> GetAllWithCategoryAndSupplier()
+        {
+            return context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Supplier)
+                .ToList();
+        }
     }
 }

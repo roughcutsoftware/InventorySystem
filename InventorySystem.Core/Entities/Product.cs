@@ -30,6 +30,3 @@ namespace InventorySystem.Core.Entities
 
 
 }
-
-
-
