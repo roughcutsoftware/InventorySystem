@@ -15,23 +15,31 @@ namespace InventorySystem.Infrastructure.Services
     {
         private readonly IProductRepository prdRepo;
         private readonly IMapper mapper;
+        private readonly ILogService _logService;
 
-        public ProductService (IProductRepository _prdRepo, IMapper _mapper)
+        public ProductService (IProductRepository _prdRepo, IMapper _mapper,ILogService logService)
         {
             prdRepo = _prdRepo;
             mapper = _mapper;
+            _logService = logService;
         }
 
         public void AddProduct(ProductDto dto)
         {
             prdRepo.Add(mapper.Map<Product>(dto));
             prdRepo.SaveChanges();
+            _logService.LogAction("System",
+                "Product Added",
+                $"Product {dto.ProductId} Added.");
         }
 
         public void DeleteProduct(int id)
         {
             prdRepo.Delete(id);
             prdRepo.SaveChanges();
+            _logService.LogAction("System",
+                "Product Deleted",
+                $"Product {id} Deleted.");
         }
 
         public List<ProductDto> GetAllProducts(int size = 20, int pageNumber = 1)
@@ -56,6 +64,9 @@ namespace InventorySystem.Infrastructure.Services
         {
             prdRepo.Update(mapper.Map<Product>(dto));
             prdRepo.SaveChanges();
+            _logService.LogAction("System",
+                "Product Updated",
+                $"Product {dto.ProductId} Updated.");
         }
     }
 }

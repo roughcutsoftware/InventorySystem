@@ -3,6 +3,7 @@ using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
+using InventorySystem.Core.Interfaces.Services;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -10,22 +11,30 @@ namespace InventorySystem.Infrastructure.Services
     {
         private readonly ISupplierRepository _supplierRepository;
         private readonly IMapper _mapper;
+        private readonly ILogService _logService;
 
-        public SupplierService(ISupplierRepository repository, IMapper mapper) {
+        public SupplierService(ISupplierRepository repository, IMapper mapper, ILogService logService) {
             _supplierRepository = repository;
             _mapper = mapper;
+            _logService = logService;
         }
 
         public void AddSupplier(SupplierDto dto)
         {
             _supplierRepository.Add(_mapper.Map<Supplier>(dto));
             _supplierRepository.SaveChanges();
+            _logService.LogAction("System",
+                "New Supplier Added",
+                $"Supplier {dto.Name} Added.");
         }
 
         public void DeleteSupplier(int id)
         {
             _supplierRepository.Delete(id);
             _supplierRepository.SaveChanges();
+            _logService.LogAction("System",
+                "Supplier Deleted",
+                $"Supplier {id} Deleted.");
         }
 
         public List<SupplierDto> GetAllSuppliers(int size = 20, int pageNumber = 1)
@@ -46,6 +55,9 @@ namespace InventorySystem.Infrastructure.Services
         {
             _supplierRepository.Update(_mapper.Map<Supplier>(dto));
             _supplierRepository.SaveChanges();
+            _logService.LogAction("System",
+                "Supplier Data Updated",
+                $"Supplier {dto.Name} Updated.");
         }
     }
 }

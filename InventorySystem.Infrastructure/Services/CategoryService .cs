@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
-using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
-using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -12,23 +10,30 @@ namespace InventorySystem.Infrastructure.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+        private readonly ILogService _logService;
 
-        public CategoryService(ICategoryRepository repository , IMapper mapper)
+        public CategoryService(ICategoryRepository repository , IMapper mapper, ILogService logService)
         {
             _categoryRepository = repository;
             _mapper = mapper;
-
+            _logService = logService;
         }
         public void AddCategory(CategoryDto dto)
         {
             _categoryRepository.Add(_mapper.Map<Category>(dto));
             _categoryRepository.SaveChanges();
+            _logService.LogAction("System",
+                "New Category Added",
+                $"Category {dto.Name} Added.");
         }
 
         public void DeleteCategory(int id)
         {
             _categoryRepository.Delete(id);
             _categoryRepository.SaveChanges() ; 
+            _logService.LogAction("System",
+                "Category Deleted",
+                $"Category {id} Deleted.");
         }
 
         public List<CategoryDto> GetAllCategories(int size = 20, int pageNumber = 1)
@@ -48,7 +53,9 @@ namespace InventorySystem.Infrastructure.Services
         {
             _categoryRepository.Update(_mapper.Map<Category>(dto));
             _categoryRepository.SaveChanges();
+            _logService.LogAction("System",
+                "Category Data Updated",
+                $"Category {dto.Name} Updated.");
         }
-
     }
 }
