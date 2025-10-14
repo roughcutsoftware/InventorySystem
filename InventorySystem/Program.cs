@@ -23,11 +23,6 @@ context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "wwwr
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
-
-
-
-
-
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDBContext>(options =>
@@ -106,11 +101,11 @@ app.MapControllerRoute(
 //using (var scope = app.Services.CreateScope())
 //{
 //    var services = scope.ServiceProvider;
-//    var context = services.GetRequiredService<AppDBContext>();
+//    var context1 = services.GetRequiredService<AppDBContext>();
 //    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 //    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 //    var logger = services.GetRequiredService<ILogger<Program>>();
-//    await DbSeeder.InitializeAsync(context, userManager, roleManager, logger);
+//    await DbSeeder.InitializeAsync(context1, userManager, roleManager, logger);
 //}
 
 
