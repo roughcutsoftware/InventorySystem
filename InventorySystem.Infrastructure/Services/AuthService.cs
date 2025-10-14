@@ -13,11 +13,13 @@ namespace InventorySystem.Infrastructure.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ILogService _logService;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogService logService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logService = logService;
         }
 
         public async Task<LoginResult> LoginAsync(string email, string password, bool rememberMe)
@@ -29,6 +31,7 @@ namespace InventorySystem.Infrastructure.Services
                 if (found)
                 {
                     await _signInManager.SignInAsync(user, rememberMe);
+                    _logService.LogAction(user.UserName, "Login", "User logged in successfully.");
                     return new LoginResult { Succeeded = true, User = user };
                 }
             }

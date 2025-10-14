@@ -15,23 +15,31 @@ namespace InventorySystem.Infrastructure.Services
     {
         private readonly ICustomerRepository cstmRepo;
         private readonly IMapper mapper;
+        private readonly ILogService _logService;
 
-        public CustomerService(ICustomerRepository cstmRepo, IMapper mapper)
+        public CustomerService(ICustomerRepository cstmRepo, IMapper mapper, ILogService logService) 
         {
             this.cstmRepo = cstmRepo;
             this.mapper = mapper;
+            _logService = logService;
         }
 
         public void AddCustomer(CustomerDto dto)
         {
             cstmRepo.Add(mapper.Map<Customer>(dto));
             cstmRepo.SaveChanges();
+            _logService.LogAction("System",
+                "Customer Added",
+                $"Customer {dto.CustomerId} Added.");
         }
 
         public void DeleteCustomer(int id)
         {
             cstmRepo.Delete(id);
             cstmRepo.SaveChanges();
+            _logService.LogAction("System",
+                "Customer Deleted",
+                $"Customer {id} Deleted.");
         }
 
         public List<CustomerDto> GetAllCustomers(int size = 20, int pageNumber = 1)
@@ -58,6 +66,9 @@ namespace InventorySystem.Infrastructure.Services
         {
             cstmRepo.Update(mapper.Map<Customer>(dto));
             cstmRepo.SaveChanges();
+            _logService.LogAction("System",
+                "Customer Data Updated",
+                $"Customer {dto.CustomerId} Updated.");
         }
     }
 }

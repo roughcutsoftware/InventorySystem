@@ -15,14 +15,13 @@ namespace InventorySystem.Infrastructure.Data
         #region Tables
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Customer> Customers { get; set; }
-
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<SaleDetails> SaleDetails { get; set; }
-
         public DbSet<PurchaseDetails> PurchaseDetails { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Sales> Sales { get; set; }
+        public DbSet<SystemLog> SystemLogs { get; set; }
 
         #endregion
     }

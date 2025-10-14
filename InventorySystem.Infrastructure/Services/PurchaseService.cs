@@ -7,16 +7,13 @@ using InventorySystem.Core.Interfaces.Services;
 
 namespace InventorySystem.Infrastructure.Services
 {
-    public class PurchaseService : IPurchaseService
+    public class PurchaseService(IPurchaseRepository repository, IProductRepository productRepository, IMapper mapper,
+        ILogService _logService) : IPurchaseService
     {
 
-        private readonly IPurchaseRepository _purchaseRepository;
-        private readonly IMapper _mapper;
-        public PurchaseService(IPurchaseRepository repository, IMapper mapper) 
-        { 
-            _purchaseRepository = repository;
-            _mapper = mapper;
-        }
+        private readonly IPurchaseRepository _purchaseRepository = repository;
+        private readonly IProductRepository _productRepository = productRepository;
+        private readonly IMapper _mapper = mapper;
 
         public void CancelPurchase(int id)
         {
@@ -42,6 +39,10 @@ namespace InventorySystem.Infrastructure.Services
 
             _purchaseRepository.Add(purchase);
             _purchaseRepository.SaveChanges();
+
+            _logService.LogAction("System",
+                "Create Purchase Order",
+                $"Purchase {dto.PurchaseId} created.");
         }
 
         public IEnumerable<Purchase> GetAllPurchases(int size = 20, int pageNumber = 1)
@@ -64,20 +65,24 @@ namespace InventorySystem.Infrastructure.Services
             if (purchase == null)
                 return;
 
-            //foreach (var detail in purchase.PurchaseDetails)
-            //{
-            //    var product = _productRepository.GetByID(detail.ProductId);
-            //    if (product != null)
-            //    {
-            //        product.QuantityInStock += detail.Quantity;
-            //        _productRepository.Update(product);
-            //    }
-            //}
+            foreach (var detail in purchase.PurchaseDetails)
+            {
+                var product = _productRepository.GetByID(detail.ProductId);
+                if (product != null)
+                {
+                    product.QuantityInStock += detail.Quantity;
+                    _productRepository.Update(product);
+                }
+            }
 
             purchase.Status = "Received";
             _purchaseRepository.Update(purchase);
             _purchaseRepository.SaveChanges();
-            //_productRepository.SaveChanges();
+            _productRepository.SaveChanges();
+
+            _logService.LogAction("System",
+                "New purchase Stock Added",
+                $"purchase {purchaseId} Added.");
         }
     }
 }
