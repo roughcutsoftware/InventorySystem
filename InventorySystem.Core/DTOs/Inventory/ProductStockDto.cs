@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InventorySystem.Core.DTOs
+namespace InventorySystem.Core.DTOs.Inventory
 {
     public class ProductStockDto
     {

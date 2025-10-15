@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using InventorySystem.Core.DTOs;
+using InventorySystem.Core.DTOs.Inventory;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
 
@@ -44,7 +44,7 @@ namespace InventorySystem.Infrastructure.Services
             return mapper.Map<List<ProductStockDto>>(lowStockProducts);
         }
 
-        public void AdjustStock(int productId, int quantity, string reason)
+        public void AdjustStock(int productId, int quantity, string reason , string _user)
         {
             var product = productRepo.GetByID(productId);
             if (product == null)
@@ -55,8 +55,8 @@ namespace InventorySystem.Infrastructure.Services
             productRepo.SaveChanges();
             string action = "AdjustStock";
             string details = $"Product: {product.Name}, Old Stock: {oldStock}, Change: {quantity}, New Stock: {product.QuantityInStock}, Reason: {reason}";
-            string user = "Admin";
-            logService.LogAction(action, details, user);
+            string user = _user;
+            logService.LogAction(user ,action, details);
 
             if (product.QuantityInStock <= product.ReorderLevel)
             {
