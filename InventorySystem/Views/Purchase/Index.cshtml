@@ -1,0 +1,49 @@
+﻿@model IEnumerable<InventorySystem.Core.Entities.Purchase>
+
+<h2>Purchases</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.PurchaseId</td>
+                <td>@p.PurchaseDate.ToShortDateString()</td>
+                <td>@p.Status</td>
+                <td>@p.TotalAmount</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@p.PurchaseId" class="btn btn-sm btn-info">Details</a>
+                    @if (p.Status == "Pending")
+                    {
+                        <form asp-action="Receive" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">Receive</button>
+                        </form>
+                        <form asp-action="Cancel" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Create New Purchase</a>

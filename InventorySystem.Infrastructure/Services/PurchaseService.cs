@@ -14,16 +14,24 @@ namespace InventorySystem.Infrastructure.Services
         private readonly IPurchaseRepository _purchaseRepository = repository;
         private readonly IProductRepository _productRepository = productRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogService _logService = _logService;
 
         public void CancelPurchase(int id)
         {
             var purchaseItem = _purchaseRepository.GetByID(id);
             if (purchaseItem == null)
+            {
+                _logService.LogAction("System", "Cancel Purchase", $"Attempted to cancel non-existing Purchase #{id}");
                 return;
+            }
+
             purchaseItem.Status = "Cancelled";
             _purchaseRepository.Update(purchaseItem);
             _purchaseRepository.SaveChanges();
+
+            _logService.LogAction("System", "Cancel Purchase", $"Purchase #{id} cancelled.");
         }
+
 
         public void CreatePurchaseOrder(PurchaseOrderDto dto)
         {
@@ -64,6 +72,12 @@ namespace InventorySystem.Infrastructure.Services
             var purchase = _purchaseRepository.GetByID(purchaseId, "PurchaseDetails");
             if (purchase == null)
                 return;
+
+            if (purchase.Status == "Received")
+            {
+                _logService.LogAction("System", "Receive Stock", $"Purchase #{purchaseId} already received.");
+                return;
+            }
 
             foreach (var detail in purchase.PurchaseDetails)
             {
