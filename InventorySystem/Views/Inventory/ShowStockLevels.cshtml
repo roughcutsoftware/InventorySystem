@@ -1,0 +1,66 @@
+﻿@model List<InventorySystem.Core.DTOs.Inventory.ProductStockDto>
+
+@{
+    ViewData["Title"] = "Inventory Stock Levels";
+    var categories = Model.Select(p => p.CategoryName)
+                          .Distinct()
+                          .OrderBy(c => c)
+                          .ToList();
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">📦 Inventory Stock Levels</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Filter by Category</label>
+            <select id="categoryFilter" class="form-select">
+                <option value="All">All</option>
+                @foreach (var category in categories)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover text-center align-middle" id="productsTable">
+        <thead class="table-dark">
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Supplier</th>
+                <th>Quantity In Stock</th>
+                <th>Reorder Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-category="@item.CategoryName">
+                    <td>@item.Name</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.SupplierName</td>
+                    <td>@item.QuantityInStock</td>
+                    <td>@item.ReorderLevel</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("categoryFilter").addEventListener("change", function () {
+            const selectedCategory = this.value;
+            const rows = document.querySelectorAll("#productsTable tbody tr");
+
+            rows.forEach(row => {
+                const category = row.getAttribute("data-category");
+                row.style.display = (selectedCategory === "All" || category === selectedCategory)
+                    ? ""
+                    : "none";
+            });
+        });
+    </script>
+}

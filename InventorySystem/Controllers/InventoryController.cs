@@ -16,7 +16,7 @@ namespace InventorySystem.web.Controllers
         public IActionResult Index()
         {
             var productStockLevels = inventoryService.GetStockLevels();
-            return View(productStockLevels);
+            return View("ShowStockLevels",productStockLevels);
         }
 
         public IActionResult LowStock()
