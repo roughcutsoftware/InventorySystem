@@ -8,7 +8,6 @@ using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.Core.Services.Implementations;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
-using InventorySystem.Infrastructure.Seeding;
 using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.Mapping;
 using InventorySystem.Web.Helpers;

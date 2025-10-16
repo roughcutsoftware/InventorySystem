@@ -1,7 +1,7 @@
 ﻿using InventorySystem.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InventorySystem.web.Views.Category
+namespace InventorySystem.web.Controllers
 {
     public class DashBoardController : Controller
     {
