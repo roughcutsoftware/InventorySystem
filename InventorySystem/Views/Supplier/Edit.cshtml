@@ -1,0 +1,8 @@
+﻿@model InventorySystem.Core.DTOs.SupplierDto
+
+<h2>Edit Supplier</h2>
+
+<form asp-action="Edit" method="post" class="mt-3">
+    <input type="hidden" asp-for="SupplierId" />
+    <partial name="Create" model="Model" />
+</form>
