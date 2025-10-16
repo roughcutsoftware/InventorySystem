@@ -8,6 +8,7 @@ using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.Core.Services.Implementations;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
+using InventorySystem.Infrastructure.Seeding;
 using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.Mapping;
 using InventorySystem.Web.Helpers;
@@ -69,6 +70,8 @@ builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+    
 
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(AutoMapperProfile)));
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(InventoryProfile)));

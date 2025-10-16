@@ -1,0 +1,89 @@
+﻿@model InventorySystem.Core.DTOs.DashboardSummaryDto
+
+@{
+    ViewData["Title"] = "Dashboard Overview";
+}
+
+<h2 class="mb-4">Dashboard Overview</h2>
+
+<form method="get" asp-action="Index" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <label>From</label>
+            <input type="date" name="from" class="form-control" value="@Model.From.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label>To</label>
+            <input type="date" name="to" class="form-control" value="@Model.To.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<div class="row text-center">
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Total Products</h6>
+                <h3>@Model.TotalProducts</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Total Suppliers</h6>
+                <h3>@Model.TotalSuppliers</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Total Sales</h6>
+                <h3>@Model.TotalSales.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Total Purchases</h6>
+                <h3>@Model.TotalPurchases.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<div class="row text-center">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6>Low Stock Items</h6>
+                <h3>@Model.LowStockCount</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Profit Summary</h5>
+                <hr />
+                <p><strong>Revenue:</strong> @Model.ProfitSummary.Revenue.ToString("C")</p>
+                <p><strong>Cost of Goods Sold:</strong> @Model.ProfitSummary.CostOfGoodsSold.ToString("C")</p>
+                <p><strong>Gross Profit:</strong> @Model.ProfitSummary.GrossProfit.ToString("C")</p>
+                <p><strong>Gross Margin:</strong> @Model.ProfitSummary.GrossMarginPercent %</p>
+            </div>
+        </div>
+    </div>
+</div>
