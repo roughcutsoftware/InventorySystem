@@ -1,4 +1,5 @@
-﻿using InventorySystem.Core.Entities;
+﻿using InventorySystem.Core.DTOs.User;
+using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.web.View_Models;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +50,28 @@ namespace InventorySystem.web.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View("Register");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _authService.RegisterAsync(model);
+                if (result.Succeeded)
+                    return RedirectToAction("Index", "Home");
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+            }
+
+            return View("Register", model);
         }
     }
 }
