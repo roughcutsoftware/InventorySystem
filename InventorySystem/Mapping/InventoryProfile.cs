@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using InventorySystem.Core.DTOs;
+using InventorySystem.Core.DTOs.Inventory;
 using InventorySystem.Core.Entities;
 
 namespace InventorySystem.web.Mapping

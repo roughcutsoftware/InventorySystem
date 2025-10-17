@@ -1,4 +1,4 @@
-﻿using InventorySystem.Core.DTOs;
+﻿using InventorySystem.Core.DTOs.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         List<ProductStockDto> GetStockLevels();
         List<ProductStockDto> GetLowStockItems();
-        void AdjustStock(int productId, int quantity, string reason );
+        void AdjustStock(int productId, int quantity, string reason,string user );
         List<InventoryReportDto> GenerateStockReport(DateTime from, DateTime to);
     }
 }

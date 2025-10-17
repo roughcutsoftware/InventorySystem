@@ -1,0 +1,42 @@
+﻿@model List<InventorySystem.Core.DTOs.Inventory.ProductStockDto>
+
+@{
+    ViewData["Title"] = "Low Stock Items";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-danger">⚠️ Low Stock Items</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-success text-center">
+            🎉 All products are sufficiently stocked!
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-danger">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Supplier</th>
+                    <th>Quantity In Stock</th>
+                    <th>Reorder Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.SupplierName</td>
+                        <td class="fw-bold text-danger">@item.QuantityInStock</td>
+                        <td>@item.ReorderLevel</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
