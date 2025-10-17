@@ -1,0 +1,64 @@
+﻿@model List<InventorySystem.Core.DTOs.Inventory.InventoryReportDto>
+
+@{
+    ViewData["Title"] = "Stock Report";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">Inventory Stock Report</h2>
+
+    <form asp-controller="Inventory" asp-action="StockReport" method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="from" class="form-label">From Date</label>
+            <input type="date" class="form-control" id="from" name="from"
+                   value="@ViewContext.HttpContext.Request.Query["from"]" />
+        </div>
+        <div class="col-md-4">
+            <label for="to" class="form-label">To Date</label>
+            <input type="date" class="form-control" id="to" name="to"
+                   value="@ViewContext.HttpContext.Request.Query["to"]" />
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Generate Report</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Product Name</th>
+                <th>Purchased Qty</th>
+                <th>Sold Qty</th>
+                <th>Current Stock</th>
+                <th>Total Purchase Amount</th>
+                <th>Total Sales Amount</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.QuantityPurchased</td>
+                        <td>@item.QuantitySold</td>
+                        <td>@item.CurrentStock</td>
+                        <td>@item.TotalPurchaseAmount.ToString("C")</td>
+                        <td>@item.TotalSalesAmount.ToString("C")</td>
+                        <td class="@(item.Profit >= 0 ? "text-success" : "text-danger")">
+                            @item.Profit.ToString("C")
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No data available for the selected range.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

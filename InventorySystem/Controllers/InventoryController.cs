@@ -22,15 +22,26 @@ namespace InventorySystem.web.Controllers
         public IActionResult LowStock()
         {
             var lowStockItems = inventoryService.GetLowStockItems();
-            return View(lowStockItems);
+            return View("ShowLowStockItems",lowStockItems);
         }
 
         [HttpGet]
-        public IActionResult AdjustStock()
+        public IActionResult AdjustStock(int productId)
         {
-            return View();
-        }
+            var product = inventoryService.GetStockLevels()
+                                          .FirstOrDefault(p => p.ProductId == productId);
 
+            if (product == null)
+                return NotFound();
+
+            var dto = new AdjustStockDto
+            {
+                ProductId = product.ProductId,
+                Name = product.Name
+            };
+
+            return View("AdjustStock",dto);
+        }
         [HttpPost]
         public IActionResult AdjustStock(AdjustStockDto dto)
         {
@@ -50,7 +61,7 @@ namespace InventorySystem.web.Controllers
             var startDate = from ?? DateTime.Now.AddMonths(-1);
             var endDate = to ?? DateTime.Now;
             var report = inventoryService.GenerateStockReport(startDate, endDate);
-            return View(report);
+            return View("StockReport",report);
         }
     }
 }

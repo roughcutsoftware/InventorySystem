@@ -32,6 +32,7 @@
                 <th>Supplier</th>
                 <th>Quantity In Stock</th>
                 <th>Reorder Level</th>
+                <th>Adjust Quantity</th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +44,15 @@
                     <td>@item.SupplierName</td>
                     <td>@item.QuantityInStock</td>
                     <td>@item.ReorderLevel</td>
+                    <td>
+                        <a asp-controller="Inventory"
+                           asp-action="AdjustStock"
+                           asp-route-productId="@item.ProductId"
+                           class="btn btn-sm btn-primary">
+                            Adjust
+                        </a>
+                    </td>
+
                 </tr>
             }
         </tbody>

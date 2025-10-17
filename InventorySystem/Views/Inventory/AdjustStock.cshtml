@@ -1,0 +1,28 @@
+﻿@model InventorySystem.Core.DTOs.Inventory.AdjustStockDto
+
+<div class="container mt-4">
+    <h2>Adjust Stock</h2>
+
+    <h4 class="text-primary mb-3">
+        Product: @Model.Name
+    </h4>
+
+    <form asp-action="AdjustStock" method="post">
+        <input type="hidden" asp-for="ProductId" />
+
+        <div class="mb-3">
+            <label asp-for="Quantity" class="form-label">Quantity Change</label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Reason" class="form-label">Reason</label>
+            <input asp-for="Reason" class="form-control" />
+            <span asp-validation-for="Reason" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
