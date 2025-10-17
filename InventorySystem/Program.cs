@@ -70,7 +70,9 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-    
+builder.Services.AddScoped<ISalesService, SalesService>();
+
+
 
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(AutoMapperProfile)));
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(InventoryProfile)));

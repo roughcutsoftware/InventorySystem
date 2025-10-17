@@ -1,0 +1,42 @@
+﻿@model IEnumerable<InventorySystem.Core.Entities.Sales>
+
+@{
+    ViewData["Title"] = "Sales List";
+}
+
+<h2>Sales Orders</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ New Sale</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sale ID</th>
+            <th>Date</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Customer</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sale in Model)
+        {
+            <tr>
+                <td>@sale.SaleId</td>
+                <td>@sale.SaleDate.ToShortDateString()</td>
+                <td>@sale.TotalAmount.ToString("C")</td>
+                <td>@sale.Status</td>
+                <td>@sale.Customer?.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@sale.SaleId" class="btn btn-sm btn-info">Details</a>
+                    <form asp-action="Cancel" asp-route-id="@sale.SaleId" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

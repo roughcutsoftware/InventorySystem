@@ -1,0 +1,85 @@
+﻿@model InventorySystem.Core.DTOs.SalesDto
+
+@{
+    ViewData["Title"] = "Create Sale";
+}
+
+<h2>Create New Sale</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Customer</label>
+        <select asp-for="CustomerId" class="form-control" asp-items="@(new SelectList(ViewBag.Customers, "CustomerId", "Name"))"></select>
+    </div>
+
+    <table class="table" id="saleDetailsTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="detailsBody">
+            <tr>
+                <td>
+                    <select name="SaleDetails[0].ProductId" class="form-control product-select">
+                        @foreach (var p in ViewBag.Products)
+                        {
+                            <option value="@p.ProductId">@p.Name</option>
+                        }
+                    </select>
+                </td>
+                <td><input type="number" name="SaleDetails[0].Quantity" class="form-control qty" /></td>
+                <td><input type="number" name="SaleDetails[0].UnitPrice" class="form-control price" step="0.01" /></td>
+                <td><input type="number" name="SaleDetails[0].Subtotal" class="form-control subtotal" readonly /></td>
+                <td><button type="button" class="btn btn-danger removeRow">X</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary" id="addRow">+ Add Item</button>
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <script>
+        let index = 1;
+
+        document.getElementById("addRow").addEventListener("click", () => {
+            const table = document.getElementById("detailsBody");
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>
+                    <select name="SaleDetails[${index}].ProductId" class="form-control product-select">
+                        ${document.querySelector(".product-select").innerHTML}
+                    </select>
+                </td>
+                <td><input type="number" name="SaleDetails[${index}].Quantity" class="form-control qty" /></td>
+                <td><input type="number" name="SaleDetails[${index}].UnitPrice" class="form-control price" step="0.01" /></td>
+                <td><input type="number" name="SaleDetails[${index}].Subtotal" class="form-control subtotal" readonly /></td>
+                <td><button type="button" class="btn btn-danger removeRow">X</button></td>
+            `;
+            table.appendChild(row);
+            index++;
+        });
+
+        document.addEventListener("input", e => {
+            if (e.target.classList.contains("qty") || e.target.classList.contains("price")) {
+                const row = e.target.closest("tr");
+                const qty = parseFloat(row.querySelector(".qty").value) || 0;
+                const price = parseFloat(row.querySelector(".price").value) || 0;
+                row.querySelector(".subtotal").value = (qty * price).toFixed(2);
+            }
+        });
+
+        document.addEventListener("click", e => {
+            if (e.target.classList.contains("removeRow")) {
+                e.target.closest("tr").remove();
+            }
+        });
+    </script>
+}

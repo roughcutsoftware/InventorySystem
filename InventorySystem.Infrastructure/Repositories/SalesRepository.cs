@@ -2,11 +2,6 @@
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventorySystem.Infrastructure.Repositories
 {
@@ -35,10 +30,11 @@ namespace InventorySystem.Infrastructure.Repositories
         public List<Sales> GetAll(int size = 20, int pageNumber = 1, string includes = "")
         {
             IQueryable<Sales> sales = _context.Sales;
-
-
-            if (!String.IsNullOrEmpty(includes))
+            if (!string.IsNullOrEmpty(includes))
+            {
                 sales = sales.Include(includes);
+            }
+
 
             return sales.Skip((pageNumber - 1) * size)
                         .Take(size)
@@ -63,7 +59,7 @@ namespace InventorySystem.Infrastructure.Repositories
 
         public void Update(Sales obj)
         {
-            var existingSales = _context.Sales.FirstOrDefault(s=>s.SaleId == obj.SaleId);
+            var existingSales = _context.Sales.FirstOrDefault(s => s.SaleId == obj.SaleId);
             if (existingSales != null)
             {
                 existingSales.SaleDetails = obj.SaleDetails;
@@ -73,5 +69,7 @@ namespace InventorySystem.Infrastructure.Repositories
                 existingSales.CreatedBy = obj.CreatedBy;
             }
         }
+
+
     }
 }

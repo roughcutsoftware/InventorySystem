@@ -15,6 +15,9 @@ namespace InventorySystem.web.Mapping
             CreateMap<Purchase, PurchaseOrderDto>().ReverseMap();
             CreateMap<PurchaseDetails, PurchaseDetailDto>().ReverseMap();
             CreateMap<Customer, CustomerDto>().ReverseMap();
+            CreateMap<Sales, SalesDto>().ReverseMap();
+            CreateMap<SaleDetails, SalesDetailsDto>().ReverseMap();
+
 
             //CreateMap<Product, ProductDto>()
             //      .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))

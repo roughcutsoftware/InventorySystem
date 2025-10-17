@@ -18,7 +18,7 @@ namespace InventorySystem.Core.DTOs
         public int CustomerId { get; set; }
         public string? CreatedBy { get; set; } // UserId
 
-        public ICollection<SaleDetails>? SaleDetails { get; set; } = new HashSet<SaleDetails>();
+        public ICollection<SalesDetailsDto>? SaleDetails { get; set; } = new HashSet<SalesDetailsDto>();
 
     }
 

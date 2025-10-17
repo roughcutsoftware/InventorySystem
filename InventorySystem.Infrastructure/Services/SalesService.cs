@@ -28,12 +28,12 @@ namespace InventorySystem.Infrastructure.Services
         public void CreateSalesOrder(SalesDto dto)
         {
             var sale = _mapper.Map<Sales>(dto);
-            sale.SaleDate= DateTime.Now;
+            sale.SaleDate = DateTime.Now;
             sale.Status = "Pending";
-            sale.TotalAmount= dto.SaleDetails.Sum(d=>d.Subtotal);
+            sale.TotalAmount = dto.SaleDetails.Sum(d => d.Subtotal);
 
             sale.SaleDetails = dto.SaleDetails
-                .Select(d=>_mapper.Map<SaleDetails>(d)).ToList();
+                .Select(d => _mapper.Map<SaleDetails>(d)).ToList();
 
 
             foreach (var detail in sale.SaleDetails)
@@ -70,11 +70,11 @@ namespace InventorySystem.Infrastructure.Services
         }
 
 
-        
+
 
         public SalesDto? GetSalesById(int id)
         {
-            var sale = _salesRepository.GetByID(id,"SalesDeatils");
+            var sale = _salesRepository.GetByID(id, "SaleDetails");
             if (sale == null) return null;
             return _mapper.Map<SalesDto>(sale);
         }
@@ -82,8 +82,8 @@ namespace InventorySystem.Infrastructure.Services
 
         public void CancelSale(int salesId)
         {
-             var sale = _salesRepository.GetByID(salesId);
-            if (sale == null)  return;
+            var sale = _salesRepository.GetByID(salesId);
+            if (sale == null) return;
             sale.Status = "Cancelled";
 
 
@@ -120,3 +120,5 @@ namespace InventorySystem.Infrastructure.Services
 
     }
 }
+
+

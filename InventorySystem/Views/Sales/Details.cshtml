@@ -1,0 +1,39 @@
+﻿@model InventorySystem.Core.DTOs.SalesDto
+
+@{
+    ViewData["Title"] = "Sale Details";
+}
+
+<h2>Sale #@Model.SaleId Details</h2>
+
+<div>
+    <p><strong>Date:</strong> @Model.SaleDate</p>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Total:</strong> @Model.TotalAmount.ToString("C")</p>
+</div>
+
+<h4>Items</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SaleDetails)
+        {
+            <tr>
+                <td>@item.Quantity</td>
+                <td>@item.UnitPrice.ToString("C")</td>
+                <td>@item.Subtotal.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>
