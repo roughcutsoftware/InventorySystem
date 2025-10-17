@@ -2,6 +2,7 @@
 using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Web.Controllers
@@ -11,22 +12,21 @@ namespace InventorySystem.Web.Controllers
         private readonly ISalesService _salesService;
         private readonly ICustomerService _customerService;
         private readonly IProductService _productService;
-
-        public SalesController(ISalesService salesService, ICustomerService customerService, IProductService productService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public SalesController(ISalesService salesService, ICustomerService customerService, IProductService productService, UserManager<ApplicationUser> userManager   )
         {
             _salesService = salesService;
             _customerService = customerService;
             _productService = productService;
+            _userManager = userManager;
         }
 
-        // GET: /Sales
         public IActionResult Index(int page = 1)
         {
             var sales = _salesService.GetAllSales(20, page);
             return View(sales);
         }
 
-        // GET: /Sales/Details/5
         public IActionResult Details(int id)
         {
             var sale = _salesService.GetSalesById(id);
@@ -34,7 +34,6 @@ namespace InventorySystem.Web.Controllers
             return View(sale);
         }
 
-        // GET: /Sales/Create
         public IActionResult Create()
         {
             ViewBag.Customers = _customerService.GetAllCustomers();
@@ -42,10 +41,9 @@ namespace InventorySystem.Web.Controllers
             return View(new SalesDto { SaleDetails = new List<SalesDetailsDto>() });
         }
 
-        // POST: /Sales/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(SalesDto dto)
+        public async Task<IActionResult> Create(SalesDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -54,11 +52,13 @@ namespace InventorySystem.Web.Controllers
                 return View(dto);
             }
 
+            var user = await _userManager.GetUserAsync(User);
+            dto.CreatedBy = user?.Id;
+
             _salesService.CreateSalesOrder(dto);
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Sales/Cancel/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Cancel(int id)
@@ -66,6 +66,14 @@ namespace InventorySystem.Web.Controllers
             _salesService.CancelSale(id);
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        public IActionResult Complete(int id)
+        {
+            _salesService.MarkAsCompleted(id);
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
 

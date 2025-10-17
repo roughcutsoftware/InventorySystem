@@ -24,7 +24,6 @@ namespace InventorySystem.Infrastructure.Services
 
 
 
-
         public void CreateSalesOrder(SalesDto dto)
         {
             var sale = _mapper.Map<Sales>(dto);
@@ -35,34 +34,29 @@ namespace InventorySystem.Infrastructure.Services
             sale.SaleDetails = dto.SaleDetails
                 .Select(d => _mapper.Map<SaleDetails>(d)).ToList();
 
-
             foreach (var detail in sale.SaleDetails)
             {
                 var product = _productRepository.GetByID(detail.ProductId);
-                if (product != null)
-                {
-                    if (product.QuantityInStock < detail.Quantity)
-                    {
-                        throw new InvalidOperationException($"Not enough stock for {product.Name}");
-                    }
+                if (product == null)
+                    throw new InvalidOperationException($"Product with ID {detail.ProductId} not found");
 
-                    product.QuantityInStock -= detail.Quantity;
-                    _productRepository.Update(product);
+                detail.Product = product;
 
-                    if (product.QuantityInStock <= product.ReorderLevel)
-                    {
-                        _notificationService.NotifyLowStock(product);
-                    }
+                if (product.QuantityInStock < detail.Quantity)
+                    throw new InvalidOperationException($"Not enough stock for {product.Name}");
 
-                }
+                product.QuantityInStock -= detail.Quantity;
+                _productRepository.Update(product);
+
+                if (product.QuantityInStock <= product.ReorderLevel)
+                    _notificationService.NotifyLowStock(product);
             }
-
 
             _salesRepository.Add(sale);
             _salesRepository.SaveChanges();
             _productRepository.SaveChanges();
-
         }
+
 
         public IEnumerable<Sales> GetAllSales(int size = 20, int pageNumber = 1)
         {
@@ -117,6 +111,18 @@ namespace InventorySystem.Infrastructure.Services
 
             }
         }
+
+        public void MarkAsCompleted(int id)
+        {
+            var sale = _salesRepository.GetByID(id);
+            if (sale == null)
+                throw new Exception("Sale not found");
+
+            sale.Status = "Completed";
+            _salesRepository.Update(sale);
+            _salesRepository.SaveChanges();
+        }
+
 
     }
 }
