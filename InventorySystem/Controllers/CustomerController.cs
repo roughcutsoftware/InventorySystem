@@ -1,5 +1,6 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.web.View_Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.web.Controllers
