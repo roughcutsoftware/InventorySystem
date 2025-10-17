@@ -35,22 +35,39 @@ namespace InventorySystem.Infrastructure.Services
 
         public void CreatePurchaseOrder(PurchaseOrderDto dto)
         {
-            var purchase = _mapper.Map<Purchase>(dto);
+            var purchase = new Purchase
+            {
+                PurchaseDate = DateTime.Now,
+                Status = "Pending",
+                SupplierId = dto.SupplierId,
+                CreatedById = dto.CreatedById,
+                PurchaseDetails = new List<PurchaseDetails>()
+            };
 
-            purchase.PurchaseDate = DateTime.Now;
-            purchase.Status = "Pending";
-            purchase.TotalAmount = dto.PurchaseDetails.Sum(d => d.subTotal);
+            foreach (var item in dto.PurchaseDetails)
+            {
+                var product = _productRepository.GetByID(item.ProductId);
+                if (product == null)
+                    throw new InvalidOperationException($"Product with ID {item.ProductId} not found.");
 
-            purchase.PurchaseDetails = dto.PurchaseDetails
-                .Select(d => _mapper.Map<PurchaseDetails>(d))
-                .ToList();
+                var unitCost = item.UnitCost > 0 ? item.UnitCost : product.UnitPrice;
+                var subtotal = item.Quantity * unitCost;
+
+                purchase.PurchaseDetails.Add(new PurchaseDetails
+                {
+                    ProductId = product.ProductId,
+                    Quantity = item.Quantity,
+                    UnitCost = unitCost,
+                    subTotal = subtotal
+                });
+            }
+
+            purchase.TotalAmount = purchase.PurchaseDetails.Sum(d => d.subTotal);
 
             _purchaseRepository.Add(purchase);
             _purchaseRepository.SaveChanges();
 
-            _logService.LogAction("System",
-                "Create Purchase Order",
-                $"Purchase {dto.PurchaseId} created.");
+            _logService.LogAction("System", "Create Purchase Order", $"Purchase #{purchase.PurchaseId} created.");
         }
 
         public IEnumerable<Purchase> GetAllPurchases(int size = 20, int pageNumber = 1)

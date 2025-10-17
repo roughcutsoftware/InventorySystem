@@ -1,7 +1,10 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
+using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventorySystem.Web.Controllers
 {
@@ -9,26 +12,41 @@ namespace InventorySystem.Web.Controllers
     {
         private readonly IPurchaseService _purchaseService;
         private readonly ILogger<PurchaseController> _logger;
+        private readonly ISupplierService _supplierService;
+        private readonly IProductService _productService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PurchaseController(IPurchaseService purchaseService, ILogger<PurchaseController> logger)
+
+        public PurchaseController(IPurchaseService purchaseService, ILogger<PurchaseController> logger,ISupplierService supplierService, IProductService productService, UserManager<ApplicationUser> userManager)
         {
             _purchaseService = purchaseService;
             _logger = logger;
+            _supplierService = supplierService;
+            _productService = productService;
+            _userManager = userManager;
         }
 
         public IActionResult Index(int page = 1, int size = 20)
         {
             try
             {
-                var purchases = _purchaseService.GetAllPurchases(size, page);
-                _logger.LogInformation("Fetched {count} purchases for page {page}", purchases.Count(), page);
+                var purchases = _purchaseService.GetAllPurchases(size, page)
+                    .Select(p => new PurchaseOrderDto
+                    {
+                        PurchaseId = p.PurchaseId,
+                        PurchaseDate = p.PurchaseDate,
+                        Status = p.Status,
+                        TotalAmount = p.TotalAmount
+                    }).ToList();
+
+                _logger.LogInformation("Fetched {count} purchases for page {page}", purchases.Count, page);
                 return View(purchases);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to load purchases.");
                 TempData["Error"] = "Unable to load purchases.";
-                return View(new List<Purchase>());
+                return View(new List<PurchaseOrderDto>());
             }
         }
 
@@ -43,23 +61,30 @@ namespace InventorySystem.Web.Controllers
             return View(purchase);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
+            ViewBag.Suppliers = new SelectList(_supplierService.GetAllSuppliers(), "SupplierId", "Name");
+            ViewBag.Products = _productService.GetAllProducts();
             return View(new PurchaseOrderDto());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(PurchaseOrderDto dto)
+        public async Task<IActionResult> Create(PurchaseOrderDto dto)
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid purchase order data submitted.");
+                ViewBag.Suppliers = _supplierService.GetAllSuppliers();
+                ViewBag.Products = _productService.GetAllProducts();
                 return View(dto);
             }
 
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+                dto.CreatedById = user?.Id;
+
                 _purchaseService.CreatePurchaseOrder(dto);
                 TempData["Success"] = "Purchase order created successfully!";
                 return RedirectToAction(nameof(Index));
@@ -68,6 +93,8 @@ namespace InventorySystem.Web.Controllers
             {
                 _logger.LogError(ex, "Error creating purchase order.");
                 TempData["Error"] = "Failed to create purchase order.";
+                ViewBag.Suppliers = _supplierService.GetAllSuppliers();
+                ViewBag.Products = _productService.GetAllProducts();
                 return View(dto);
             }
         }

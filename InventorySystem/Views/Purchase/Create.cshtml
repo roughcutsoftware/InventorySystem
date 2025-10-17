@@ -1,29 +1,177 @@
 ﻿@model InventorySystem.Core.DTOs.PurchaseOrderDto
 
-<h2>Create Purchase Order</h2>
+@{
+    ViewData["Title"] = "Create Purchase Order";
+}
 
-<form asp-action="Create" method="post">
+<h2 class="mb-4">New Purchase Order</h2>
+
+<form asp-action="Create" method="post" id="purchaseForm">
     <div class="mb-3">
-        <label>Supplier ID</label>
-        <input asp-for="SupplierId" class="form-control" />
+        <label for="SupplierId" class="form-label fw-bold">Supplier</label>
+        <select asp-for="SupplierId" asp-items="ViewBag.Suppliers" class="form-select">
+            <option value="">-- Select Supplier --</option>
+        </select>
     </div>
 
-    <h4>Purchase Details</h4>
-    <table class="table">
-        <thead>
-            <tr><th>Product ID</th><th>Quantity</th><th>Unit Cost</th></tr>
+    <table class="table table-bordered align-middle text-center" id="purchaseDetailsTable">
+        <thead class="table-light">
+            <tr>
+                <th>Product</th>
+                <th>Unit Cost</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < Model.PurchaseDetails.Count; i++)
-            {
-                <tr>
-                    <td><input asp-for="@Model.PurchaseDetails[i].ProductId" class="form-control" /></td>
-                    <td><input asp-for="@Model.PurchaseDetails[i].Quantity" class="form-control" /></td>
-                    <td><input asp-for="@Model.PurchaseDetails[i].UnitCost" class="form-control" /></td>
-                </tr>
-            }
+            <!-- initial empty row (names set to index 0) -->
+            <tr data-row="0">
+                <td>
+                    <select name="PurchaseDetails[0].ProductId" class="form-select product-select">
+                        <option value="">-- Select Product --</option>
+                        @* Ensure each product has UnitPrice exposed in ViewBag.Products *@
+                        @foreach (var product in ViewBag.Products)
+                        {
+                            <option value="@product.ProductId" data-cost="@product.UnitPrice">@product.Name</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="PurchaseDetails[0].UnitCost" class="form-control unit-cost" readonly />
+                </td>
+                <td>
+                    <input type="number" name="PurchaseDetails[0].Quantity" class="form-control quantity" min="1" value="1" />
+                </td>
+                <td>
+                    <input type="text" name="PurchaseDetails[0].subTotal" class="form-control subtotal" readonly />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-row">×</button>
+                </td>
+            </tr>
         </tbody>
     </table>
 
-    <button type="submit" class="btn btn-success">Create</button>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <button type="button" id="addRowBtn" class="btn btn-secondary">+ Add Product</button>
+        <div class="fw-bold fs-5">
+            Total: <span id="grandTotal">0.00</span>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Create Purchase</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
 </form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        (function () {
+            // row index starts at 1 because we have initial row at index 0
+            let rowIndex = 1;
+
+            // helper: update this row's subtotal based on cost & qty
+            function updateRowSubtotal($row) {
+                const cost = parseFloat($row.find('.unit-cost').val()) || 0;
+                const qty = parseFloat($row.find('.quantity').val()) || 0;
+                const subtotal = cost * qty;
+                $row.find('.subtotal').val(subtotal.toFixed(2));
+                updateGrandTotal();
+            }
+
+            // update grand total
+            function updateGrandTotal() {
+                let total = 0;
+                $('.subtotal').each(function () {
+                    total += parseFloat($(this).val()) || 0;
+                });
+                $('#grandTotal').text(total.toFixed(2));
+            }
+
+            // when product changes (works for initial row + cloned rows)
+            $(document).on('change', '.product-select', function () {
+                const $select = $(this);
+                // use attr to reliably read data attribute from cloned options
+                const cost = parseFloat($select.find('option:selected').attr('data-cost')) || 0;
+                const $row = $select.closest('tr');
+                $row.find('.unit-cost').val(cost.toFixed(2));
+                // If quantity empty, ensure it's at least 1
+                const qtyInput = $row.find('.quantity');
+                if (!qtyInput.val()) qtyInput.val(1);
+                updateRowSubtotal($row);
+            });
+
+            // when quantity or cost input changes
+            $(document).on('input', '.quantity, .unit-cost', function () {
+                const $row = $(this).closest('tr');
+                updateRowSubtotal($row);
+            });
+
+            // add row: clone the first row but update element names so model binder works
+            $('#addRowBtn').click(function () {
+                const $firstRow = $('#purchaseDetailsTable tbody tr:first');
+                const $newRow = $firstRow.clone();
+
+                // update data-row and inputs' name attributes to use the current index
+                $newRow.attr('data-row', rowIndex);
+
+                // product select: set name and clear selection
+                $newRow.find('.product-select')
+                    .attr('name', `PurchaseDetails[${rowIndex}].ProductId`)
+                    .val('');
+
+                // unit-cost input: set name and clear value
+                $newRow.find('.unit-cost')
+                    .attr('name', `PurchaseDetails[${rowIndex}].UnitCost`)
+                    .val('');
+
+                // quantity input: set name and default value
+                $newRow.find('.quantity')
+                    .attr('name', `PurchaseDetails[${rowIndex}].Quantity`)
+                    .val(1);
+
+                // subtotal input: set name and clear
+                $newRow.find('.subtotal')
+                    .attr('name', `PurchaseDetails[${rowIndex}].subTotal`)
+                    .val('');
+
+                // append and increment index
+                $('#purchaseDetailsTable tbody').append($newRow);
+                rowIndex++;
+            });
+
+            // remove row (never remove last row; keep at least 1)
+            $(document).on('click', '.remove-row', function () {
+                if ($('#purchaseDetailsTable tbody tr').length > 1) {
+                    $(this).closest('tr').remove();
+                    updateGrandTotal();
+                } else {
+                    // Clear the single row instead of removing it
+                    const $row = $('#purchaseDetailsTable tbody tr:first');
+                    $row.find('.product-select').val('');
+                    $row.find('.unit-cost').val('');
+                    $row.find('.quantity').val('');
+                    $row.find('.subtotal').val('');
+                    updateGrandTotal();
+                }
+            });
+
+            // ensure initial row updates if there is a preselected product (optional)
+            $(document).ready(function () {
+                $('#purchaseDetailsTable tbody tr').each(function () {
+                    const $row = $(this);
+                    const $select = $row.find('.product-select');
+                    if ($select.val()) {
+                        const cost = parseFloat($select.find('option:selected').attr('data-cost')) || 0;
+                        $row.find('.unit-cost').val(cost.toFixed(2));
+                        if (!$row.find('.quantity').val()) $row.find('.quantity').val(1);
+                        updateRowSubtotal($row);
+                    }
+                });
+            });
+        })();
+    </script>
+}

@@ -40,12 +40,12 @@ namespace InventorySystem.Infrastructure.Repositories
 
         public Purchase? GetByID(int id, string include = "")
         {
-            IQueryable<Purchase> purchases = _context.Purchases;
-            if (!String.IsNullOrEmpty(include))
-            {
-                purchases = purchases.Include(include);
-            }
-            return purchases.FirstOrDefault(p => p.PurchaseId == id);
+            return _context.Purchases
+                .Include(p => p.Supplier)
+                .Include(p => p.CreatedBy)
+                .Include(p => p.PurchaseDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefault(p => p.PurchaseId == id);
         }
 
         public void SaveChanges()
