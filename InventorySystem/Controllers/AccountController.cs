@@ -54,24 +54,25 @@ namespace InventorySystem.web.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View("Register");
+            return View(new UserCreateViewModel());
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterDto model)
+        public async Task<IActionResult> Register(UserCreateViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _authService.RegisterAsync(model);
-                if (result.Succeeded)
-                    return RedirectToAction("Index", "Home");
+            if (!ModelState.IsValid)
+                return View(model);
 
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError("", error.Description);
-            }
+            var result = await _authService.RegisterAsync(model);
 
-            return View("Register", model);
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View(model);
         }
+
     }
 }

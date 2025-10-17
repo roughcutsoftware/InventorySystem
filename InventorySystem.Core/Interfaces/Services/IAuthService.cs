@@ -1,9 +1,11 @@
-﻿using System;
+﻿using InventorySystem.Core.Entities;
+using InventorySystem.web.View_Models;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InventorySystem.Core.Entities;
 
 namespace InventorySystem.Core.Interfaces.Services
 {
@@ -11,6 +13,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         Task<LoginResult> LoginAsync(string email, string password, bool rememberMe);
         Task LogoutAsync();
+        Task<IdentityResult> RegisterAsync(UserCreateViewModel model);
     }
     public class LoginResult
     {
