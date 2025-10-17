@@ -72,7 +72,9 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportExportService, ReportExportService>();
 
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-    
+builder.Services.AddScoped<ISalesService, SalesService>();
+
+
 
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(AutoMapperProfile)));
 builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(InventoryProfile)));

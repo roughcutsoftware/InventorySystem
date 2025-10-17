@@ -21,69 +21,66 @@ namespace InventorySystem.Infrastructure.Services
             _productRepository = productRepository;
             _notificationService = notificationService;
         }
-
-
-
-
         public void CreateSalesOrder(SalesDto dto)
         {
             var sale = _mapper.Map<Sales>(dto);
-            sale.SaleDate= DateTime.Now;
+            sale.SaleDate = DateTime.Now;
             sale.Status = "Pending";
-            sale.TotalAmount= dto.SaleDetails.Sum(d=>d.Subtotal);
+            sale.SaleDetails = new List<SaleDetails>();
 
-            sale.SaleDetails = dto.SaleDetails
-                .Select(d=>_mapper.Map<SaleDetails>(d)).ToList();
+            decimal total = 0;
 
-
-            foreach (var detail in sale.SaleDetails)
+            foreach (var detailDto in dto.SaleDetails)
             {
-                var product = _productRepository.GetByID(detail.ProductId);
-                if (product != null)
+                var product = _productRepository.GetByID(detailDto.ProductId);
+                if (product == null)
+                    throw new InvalidOperationException($"Product with ID {detailDto.ProductId} not found.");
+
+                var unitPrice = product.UnitPrice;
+                var subtotal = unitPrice * detailDto.Quantity;
+
+                if (product.QuantityInStock < detailDto.Quantity)
+                    throw new InvalidOperationException($"Not enough stock for {product.Name}.");
+
+                product.QuantityInStock -= detailDto.Quantity;
+                _productRepository.Update(product);
+
+                if (product.QuantityInStock <= product.ReorderLevel)
+                    _notificationService.NotifyLowStock(product);
+
+                var saleDetail = new SaleDetails
                 {
-                    if (product.QuantityInStock < detail.Quantity)
-                    {
-                        throw new InvalidOperationException($"Not enough stock for {product.Name}");
-                    }
+                    ProductId = detailDto.ProductId,
+                    Quantity = detailDto.Quantity,
+                    UnitPrice = unitPrice,
+                    Subtotal = subtotal
+                };
 
-                    product.QuantityInStock -= detail.Quantity;
-                    _productRepository.Update(product);
-
-                    if (product.QuantityInStock <= product.ReorderLevel)
-                    {
-                        _notificationService.NotifyLowStock(product);
-                    }
-
-                }
+                sale.SaleDetails.Add(saleDetail);
+                total += subtotal;
             }
 
+            sale.TotalAmount = total;
 
             _salesRepository.Add(sale);
             _salesRepository.SaveChanges();
             _productRepository.SaveChanges();
-
         }
-
         public IEnumerable<Sales> GetAllSales(int size = 20, int pageNumber = 1)
         {
             return _salesRepository.GetAll(size, pageNumber);
         }
-
-
-        
-
         public SalesDto? GetSalesById(int id)
         {
-            var sale = _salesRepository.GetByID(id,"SalesDeatils");
+            var sale = _salesRepository.GetByID(id, "SaleDetails");
             if (sale == null) return null;
             return _mapper.Map<SalesDto>(sale);
         }
 
-
         public void CancelSale(int salesId)
         {
-             var sale = _salesRepository.GetByID(salesId);
-            if (sale == null)  return;
+            var sale = _salesRepository.GetByID(salesId);
+            if (sale == null) return;
             sale.Status = "Cancelled";
 
 
@@ -117,6 +114,17 @@ namespace InventorySystem.Infrastructure.Services
 
             }
         }
+        public void MarkAsCompleted(int id)
+        {
+            var sale = _salesRepository.GetByID(id);
+            if (sale == null)
+                throw new Exception("Sale not found");
+
+            sale.Status = "Completed";
+            _salesRepository.Update(sale);
+            _salesRepository.SaveChanges();
+        }
+
 
     }
 }

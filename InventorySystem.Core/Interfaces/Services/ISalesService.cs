@@ -10,5 +10,6 @@ namespace InventorySystem.Core.Interfaces.Services
         SalesDto? GetSalesById(int id);
         void ReduceStock(int productId, int quantity); 
         void CancelSale(int salesId);
+        void MarkAsCompleted(int id);
     }
 }
