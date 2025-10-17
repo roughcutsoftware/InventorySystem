@@ -1,13 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using InventorySystem.Core.DTOs.Reports;
 
-namespace InventorySystem.web.View_Models
+namespace InventorySystem.Web.View_Models
 {
     public class ReportViewModel
     {
-        [DataType(DataType.DateTime)]
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "From Date")]
         public DateTime DateFrom { get; set; }
 
-        [DataType(DataType.DateTime)]
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "To Date")]
         public DateTime DateTo { get; set; }
+        public List<SalesReportDto>? Sales { get; set; }
+        public List<PurchaseReportDto>? Purchases { get; set; }
+        public List<InventoryValuationDto>? Inventory { get; set; }
     }
 }

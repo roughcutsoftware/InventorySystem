@@ -1,7 +1,7 @@
 ﻿using InventorySystem.Core.DTOs;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace InventorySystem.web.View_Models
+namespace InventorySystem.Web.View_Models
 {
     public class Product_ViewModel
     {

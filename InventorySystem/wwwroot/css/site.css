@@ -1,31 +1,295 @@
-html {
-  font-size: 14px;
+/* Custom styles for Inventory Management System */
+
+/* Utility Classes */
+.opacity-50 {
+    opacity: 0.5;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Button Enhancements */
+.btn {
+    transition: all 0.3s ease;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+/* Card Enhancements */
+.card {
+    transition: all 0.3s ease;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 2rem 0 rgba(58,59,69,0.25) !important;
+    }
+
+/* Table Styles */
+.table-responsive {
+    border-radius: 0.35rem;
 }
 
-body {
-  margin-bottom: 60px;
+.table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* DataTables Custom Styling */
+.dataTables_wrapper .dataTables_length select {
+    padding: 0.375rem 2rem 0.375rem 0.75rem;
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    padding: 0.375rem 0.75rem;
+    margin-left: 0.5rem;
 }
+
+table.dataTable tbody tr.table-warning {
+    background-color: #fff3cd !important;
+}
+
+/* Badge Styling */
+.badge {
+    padding: 0.35rem 0.65rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Form Enhancements */
+.form-control:focus,
+.form-select:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Alert Animations */
+.alert {
+    animation: slideInDown 0.5s ease;
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Loading Spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+/* Empty State Styling */
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #d1d3e2;
+        margin-bottom: 1rem;
+    }
+
+/* Print Styles */
+@media print {
+    .sidebar,
+    .top-navbar,
+    .btn,
+    .breadcrumb,
+    .page-header {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+/* Status Badges */
+.status-active {
+    background-color: #1cc88a;
+    color: white;
+}
+
+.status-inactive {
+    background-color: #e74a3b;
+    color: white;
+}
+
+.status-pending {
+    background-color: #f6c23e;
+    color: #000;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+    .action-buttons .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+
+/* Dashboard Cards Animation */
+.dashboard-card {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Chart Container */
+canvas {
+    max-height: 300px;
+}
+
+/* Footer (if needed in future) */
+.footer {
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #e3e6f0;
+    margin-top: auto;
+}
+
+/* Quick Stats Cards */
+.stat-card {
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+}
+
+    .stat-card:hover {
+        transform: translateX(5px);
+    }
+
+    .stat-card.primary {
+        border-left-color: #4e73df;
+    }
+
+    .stat-card.success {
+        border-left-color: #1cc88a;
+    }
+
+    .stat-card.warning {
+        border-left-color: #f6c23e;
+    }
+
+    .stat-card.danger {
+        border-left-color: #e74a3b;
+    }
+
+/* Modal Enhancements */
+.modal-content {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background-color: #4e73df;
+    color: white;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+/* Tooltip Styling */
+.tooltip-inner {
+    background-color: #5a5c69;
+    font-size: 0.875rem;
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: #4e73df;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+/* File Upload Styling */
+.custom-file-label::after {
+    background-color: #4e73df;
+    color: white;
+}
+
+/* Breadcrumb Custom */
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-size: 1.2rem;
+}
+
+.breadcrumb-item a {
+    color: #4e73df;
+    text-decoration: none;
+}
+
+    .breadcrumb-item a:hover {
+        text-decoration: underline;
+    }
