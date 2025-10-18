@@ -19,7 +19,7 @@
         <form asp-action="Login" method="post">
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="All" class="alert alert-danger"></div>
+            @* <div asp-validation-summary="All" class="alert alert-danger"></div> *@
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label">

@@ -22,13 +22,17 @@ namespace InventorySystem.Infrastructure.Services
             string message = $"Low Stock Alert: {product.Name} has only {product.QuantityInStock} units left " +
                              $"(Reorder Level: {product.ReorderLevel ?? 0}).";
 
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", new
+            var notification = new
             {
                 type = "warning",
                 title = "Low Stock",
                 message,
                 productId = product.ProductId
-            });
+            };
+
+            Console.WriteLine($"Sending notification: {System.Text.Json.JsonSerializer.Serialize(notification)}");
+
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", notification);
         }
         public async Task NotifyPurchaseReceived()
         {

@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;

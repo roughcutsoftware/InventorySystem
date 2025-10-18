@@ -285,6 +285,62 @@
             color: var(--primary-color);
         }
 
+        /* Custom Styles */
+        .notification-dropdown {
+            width: 350px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border: none;
+            max-height: 80vh;
+        }
+
+        .notification-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .notification-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .notification-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+
+        .notification-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .notification-item {
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .notification-item.warning {
+            border-left-color: #ffc107;
+        }
+
+        .notification-item.success {
+            border-left-color: #28a745;
+        }
+
+        .notification-item.info {
+            border-left-color: #17a2b8;
+        }
+
+        .notification-item:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .notification-message {
+            color: #495057;
+            font-size: 0.875rem;
+        }
+
         /* Responsive */
         @@media (max-width: 768px) {
             .sidebar
@@ -463,9 +519,16 @@
                         <i class="bi bi-bell fs-4"></i>
                         <span id="notifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
                     </a>
-                    <ul id="notifList" class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="notifDropdown" style="width: 300px;">
-                        <li class="dropdown-header text-center fw-bold bg-light">Notifications</li>
-                        <li id="notifItems" class="list-group list-group-flush"></li>
+                    <ul id="notifList" class="dropdown-menu dropdown-menu-end p-0 notification-dropdown" aria-labelledby="notifDropdown">
+                        <li class="dropdown-header d-flex justify-content-between align-items-center py-2 px-3 bg-light">
+                            <span class="fw-bold">Notifications</span>
+                            <button class="btn btn-sm btn-link p-0 text-decoration-none" onclick="clearNotifications()">
+                                Clear All
+                            </button>
+                        </li>
+                        <div class="notification-scroll" style="max-height: 300px; overflow-y: auto;">
+                            <li id="notifItems" class="list-group list-group-flush"></li>
+                        </div>
                     </ul>
                 </li>
 
@@ -570,69 +633,207 @@
             "timeOut": "3000"
         };
 
-                const connection = new signalR.HubConnectionBuilder()
+
+    // Notification System
+    let notifications = [];
+
+    function startSignalRConnection() {
+        const connection = new signalR.HubConnectionBuilder()
             .withUrl("/notificationHub")
+            .withAutomaticReconnect([0, 2000, 5000, 10000])
             .build();
 
-        connection.start()
-            .then(() => console.log("SignalR connected"))
-            .catch(err => console.error(err.toString()));
-
-            connection.on("ReceiveNotification", (data) => {
-            const type = data.type || "info";
-            const title = data.title || "Notification";
-            const message = data.message || "";
-
-            // Add to notifications array
-            notifications.unshift({ type, title, message });
-
-            // Update bell count
-            $("#notifCount").text(notifications.length);
-
-            // Add to dropdown
-            const itemHtml = `
-                <li class="list-group-item ${type === 'warning' ? 'list-group-item-warning' :
-                                            type === 'success' ? 'list-group-item-success' : 'list-group-item-info'}">
-                    <strong>${title}</strong><br/>
-                    <small>${message}</small>
-                </li>`;
-            $("#notifItems").prepend(itemHtml);
-
-            // Keep max 10 items
-            if ($("#notifItems li").length > 10) {
-                $("#notifItems li:last").remove();
+        async function start() {
+            try {
+                await connection.start();
+                console.log("SignalR connected");
+                // Request initial notifications if needed
+                // await connection.invoke("GetInitialNotifications");
+            } catch (err) {
+                console.error("SignalR Connection Error:", err);
+                setTimeout(start, 5000);
             }
-
-            // Show toast
-            showToast(title, message, type);
-        });
-
-                function showToast(title, message, type) {
-            const toastId = 'toast-' + Date.now();
-            const bgClass = type === 'success' ? 'bg-success text-white' :
-                            type === 'warning' ? 'bg-warning text-dark' : 'bg-info text-white';
-
-            const toastHtml = `
-            <div id="${toastId}" class="toast align-items-center ${bgClass} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <strong>${title}</strong><br>${message}
-                    </div>
-                    <button type="button" class="btn-close ${type === 'warning' ? '' : 'btn-close-white'} me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>`;
-
-            $("#toastContainer").append(toastHtml);
-            const toastEl = new bootstrap.Toast(document.getElementById(toastId), { delay: 5000 });
-            toastEl.show();
-
-            // Remove from DOM after hidden
-            document.getElementById(toastId).addEventListener('hidden.bs.toast', () => {
-                document.getElementById(toastId)?.remove();
-            });
         }
 
+        connection.onclose(async () => {
+            console.log("SignalR disconnected");
+            await start();
+        });
 
+        connection.on("ReceiveNotification", (data) => {
+            console.log("Received notification:", data); // Add this for debugging
+
+            // Handle both object and string messages
+            let notification;
+            if (typeof data === 'string') {
+                notification = {
+                    type: 'info',
+                    title: 'Notification',
+                    message: data,
+                    timestamp: new Date().toLocaleString()
+                };
+            } else {
+                notification = {
+                    type: data.type || 'info',
+                    title: data.title || 'Notification',
+                    message: data.message || '',
+                    timestamp: new Date().toLocaleString()
+                };
+            }
+
+            // Add to notifications array
+            notifications.unshift({
+                ...notification,
+                id: Date.now(),
+                isRead: false
+            });
+
+            // Keep only last 50 notifications
+            if (notifications.length > 50) {
+                notifications.pop();
+            }
+
+            // Update UI
+            updateNotificationUI();
+
+            // Show toast
+            showNotificationToast(notification);
+        });
+
+        start();
+        return connection;
+    }
+
+    function handleNewNotification(data) {
+        const notification = {
+            id: Date.now(),
+            type: data.type || "info",
+            title: data.title || "Notification",
+            message: data.message || "",
+            timestamp: new Date().toLocaleString(),
+            isRead: false
+        };
+
+        notifications.unshift(notification);
+        if (notifications.length > 50) notifications.pop();
+        
+        updateNotificationUI();
+        showNotificationToast(notification);
+    }
+
+    function updateNotificationUI() {
+        const $notifItems = $("#notifItems");
+        const $notifCount = $("#notifCount");
+        
+        // Update count
+        const unreadCount = notifications.filter(n => !n.isRead).length;
+        $notifCount.text(unreadCount);
+        $notifCount.toggle(unreadCount > 0);
+
+        // Update list
+        $notifItems.empty();
+
+        if (notifications.length === 0) {
+            $notifItems.append(`
+                <li class="list-group-item text-center text-muted py-3">
+                    <i class="bi bi-bell-slash me-2"></i>No notifications
+                </li>
+            `);
+            return;
+        }
+
+        notifications.slice(0, 10).forEach(notif => {
+            const itemHtml = `
+                <li class="list-group-item notification-item ${notif.type}" 
+                    data-id="${notif.id}" 
+                    onclick="markNotificationRead(${notif.id})">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="fw-bold">${notif.title}</div>
+                            <div class="notification-message">${notif.message}</div>
+                        </div>
+                        <small class="text-muted">${formatTimeAgo(notif.timestamp)}</small>
+                    </div>
+                    ${!notif.isRead ? '<span class="position-absolute top-0 end-0 p-2"><span class="badge bg-primary rounded-circle" style="width: 8px; height: 8px;"></span></span>' : ''}
+                </li>
+            `;
+            $notifItems.append(itemHtml);
+        });
+
+        if (notifications.length > 10) {
+            $notifItems.append(`
+                <li class="list-group-item text-center">
+                    <small class="text-muted">Showing 10 of ${notifications.length} notifications</small>
+                </li>
+            `);
+        }
+    }
+
+    function getNotificationIcon(type) {
+        switch(type) {
+            case 'warning': return 'bi-exclamation-triangle-fill text-warning';
+            case 'success': return 'bi-check-circle-fill text-success';
+            case 'error': return 'bi-x-circle-fill text-danger';
+            default: return 'bi-info-circle-fill text-info';
+        }
+    }
+
+    function formatTimeAgo(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+
+        if (seconds < 60) return 'Just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return date.toLocaleDateString();
+    }
+
+    function markNotificationRead(id) {
+        const notification = notifications.find(n => n.id === id);
+        if (notification && !notification.isRead) {
+            notification.isRead = true;
+            updateNotificationUI();
+        }
+    }
+
+    function showNotificationToast(notification) {
+        console.log("Showing toast:", notification); // Add this for debugging
+
+        const toastOptions = {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 5000,
+            positionClass: 'toast-top-right',
+            preventDuplicates: true
+        };
+
+        switch (notification.type) {
+            case 'warning':
+                toastr.warning(notification.message, notification.title, toastOptions);
+                break;
+            case 'success':
+                toastr.success(notification.message, notification.title, toastOptions);
+                break;
+            case 'error':
+                toastr.error(notification.message, notification.title, toastOptions);
+                break;
+            default:
+                toastr.info(notification.message, notification.title, toastOptions);
+        }
+    }
+
+    function clearNotifications() {
+        notifications = [];
+        updateNotificationUI();
+    }
+
+    // Initialize SignalR when document is ready
+    $(document).ready(() => {
+        const connection = startSignalRConnection();
+    });
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
