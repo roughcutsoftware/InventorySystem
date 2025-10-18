@@ -1,7 +1,7 @@
 ﻿
+using InventorySystem.Core.DTOs.User;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
-using InventorySystem.web.View_Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -47,11 +47,11 @@ namespace InventorySystem.Infrastructure.Services
         {
             await _signInManager.SignOutAsync();
         }
-        public async Task<IdentityResult> RegisterAsync(UserCreateViewModel model)
+        public async Task<IdentityResult> RegisterAsync(RegisterDto model)
         {
             var user = new ApplicationUser
             {
-                UserName = model.Username,
+                UserName = model.UserName,
                 Email = model.Email,
                 CreatedAt = DateTime.Now
             };
@@ -60,12 +60,12 @@ namespace InventorySystem.Infrastructure.Services
             if (result.Succeeded)
             {
                
-                await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                await _userManager.AddToRoleAsync(user, model.Role);
 
                
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
-                _logService.LogAction(user.UserName, "Register", $"User registered with role: {model.SelectedRole}");
+                _logService.LogAction(user.UserName, "Register", $"User registered with role: {model.Role}");
             }
 
             return result;

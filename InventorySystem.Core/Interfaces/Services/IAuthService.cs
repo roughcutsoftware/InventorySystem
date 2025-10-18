@@ -1,5 +1,6 @@
-﻿using InventorySystem.Core.Entities;
-using InventorySystem.web.View_Models;
+﻿using InventorySystem.Core.DTOs.User;
+using InventorySystem.Core.Entities;
+
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         Task<LoginResult> LoginAsync(string email, string password, bool rememberMe);
         Task LogoutAsync();
-        Task<IdentityResult> RegisterAsync(UserCreateViewModel model);
+        Task<IdentityResult> RegisterAsync(RegisterDto model);
     }
     public class LoginResult
     {

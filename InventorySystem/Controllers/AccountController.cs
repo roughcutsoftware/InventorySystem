@@ -58,10 +58,17 @@ namespace InventorySystem.web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(UserCreateViewModel model)
+        public async Task<IActionResult> Register(RegisterDto model)
         {
             if (!ModelState.IsValid)
                 return View(model);
+            var dto = new RegisterDto
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                Password = model.Password,
+                Role = model.Role
+            };
 
             var result = await _authService.RegisterAsync(model);
 
