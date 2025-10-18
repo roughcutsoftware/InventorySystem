@@ -35,7 +35,7 @@ namespace InventorySystem.web.Controllers
                     loginViewModel.Password,
                     loginViewModel.RememberMe);
                 if (result.Succeeded) {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Dashboard");
                 }
                 ModelState.AddModelError("", result.ErrorMessage);
             }
