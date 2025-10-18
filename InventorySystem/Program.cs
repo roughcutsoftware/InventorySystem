@@ -8,6 +8,7 @@ using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.Core.Services.Implementations;
 using InventorySystem.Infrastructure.Data;
 using InventorySystem.Infrastructure.Repositories;
+using InventorySystem.Infrastructure.Seeding;
 using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.Mapping;
 using InventorySystem.Web.Helpers;
@@ -70,6 +71,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportExportService, ReportExportService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ISalesService, SalesService>();
@@ -104,15 +106,15 @@ app.MapControllerRoute(
     pattern: "{controller=Account}/{action=Login}")
     .WithStaticAssets();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    var context1 = services.GetRequiredService<AppDBContext>();
-//    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-//    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-//    var logger = services.GetRequiredService<ILogger<Program>>();
-//    await DbSeeder.InitializeAsync(context1, userManager, roleManager, logger);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context1 = services.GetRequiredService<AppDBContext>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    await DbSeeder.InitializeAsync(context1, userManager, roleManager, logger);
+}
 
 
 app.Run();
