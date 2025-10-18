@@ -26,7 +26,12 @@ namespace InventorySystem.Infrastructure.Services
 
         public void AddProduct(ProductDto dto)
         {
-            prdRepo.Add(mapper.Map<Product>(dto));
+
+            var product = mapper.Map<Product>(dto);
+
+            product.CreatedAt = DateTime.Now;
+
+            prdRepo.Add(product);
             prdRepo.SaveChanges();
             _logService.LogAction("System",
                 "Product Added",

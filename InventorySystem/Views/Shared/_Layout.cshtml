@@ -18,6 +18,8 @@
     <!-- Toastr Notifications -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
@@ -143,6 +145,13 @@
         /* Optional: Smooth dropdown animation */
         .sidebar-menu .dropdown-menu.show {
             animation: dropdownSlide 0.2s ease forwards;
+        }
+
+        .nav-item::marker {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            content: none; /* for ::marker */
         }
 
         @@keyframes dropdownSlide {
@@ -436,7 +445,7 @@
             </button>
 
             <div class="user-info">
-                <!-- Notifications -->
+                @* <!-- Notifications -->
                 <div class="notification-badge" data-bs-toggle="dropdown">
                     <i class="fas fa-bell"></i>
                     <span class="badge bg-danger">3</span>
@@ -446,7 +455,23 @@
                     <li><a class="dropdown-item" href="#">Low stock alert for Product A</a></li>
                     <li><a class="dropdown-item" href="#">New order received</a></li>
                     <li><a class="dropdown-item" href="#">Payment pending</a></li>
-                </ul>
+                </ul> *@
+
+                <!-- Notification Bell -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link position-relative" href="#" id="notifDropdown" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell fs-4"></i>
+                        <span id="notifCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                    </a>
+                    <ul id="notifList" class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="notifDropdown" style="width: 300px;">
+                        <li class="dropdown-header text-center fw-bold bg-light">Notifications</li>
+                        <li id="notifItems" class="list-group list-group-flush"></li>
+                    </ul>
+                </li>
+
+                <!-- Toast Container -->
+                <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
 
                 <!-- User Dropdown -->
                 <div class="dropdown">
@@ -509,6 +534,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.7/signalr.min.js" integrity="sha512-/..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
         // Sidebar Toggle
@@ -543,6 +569,70 @@
             "positionClass": "toast-top-right",
             "timeOut": "3000"
         };
+
+                const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/notificationHub")
+            .build();
+
+        connection.start()
+            .then(() => console.log("SignalR connected"))
+            .catch(err => console.error(err.toString()));
+
+            connection.on("ReceiveNotification", (data) => {
+            const type = data.type || "info";
+            const title = data.title || "Notification";
+            const message = data.message || "";
+
+            // Add to notifications array
+            notifications.unshift({ type, title, message });
+
+            // Update bell count
+            $("#notifCount").text(notifications.length);
+
+            // Add to dropdown
+            const itemHtml = `
+                <li class="list-group-item ${type === 'warning' ? 'list-group-item-warning' :
+                                            type === 'success' ? 'list-group-item-success' : 'list-group-item-info'}">
+                    <strong>${title}</strong><br/>
+                    <small>${message}</small>
+                </li>`;
+            $("#notifItems").prepend(itemHtml);
+
+            // Keep max 10 items
+            if ($("#notifItems li").length > 10) {
+                $("#notifItems li:last").remove();
+            }
+
+            // Show toast
+            showToast(title, message, type);
+        });
+
+                function showToast(title, message, type) {
+            const toastId = 'toast-' + Date.now();
+            const bgClass = type === 'success' ? 'bg-success text-white' :
+                            type === 'warning' ? 'bg-warning text-dark' : 'bg-info text-white';
+
+            const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center ${bgClass} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}</strong><br>${message}
+                    </div>
+                    <button type="button" class="btn-close ${type === 'warning' ? '' : 'btn-close-white'} me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>`;
+
+            $("#toastContainer").append(toastHtml);
+            const toastEl = new bootstrap.Toast(document.getElementById(toastId), { delay: 5000 });
+            toastEl.show();
+
+            // Remove from DOM after hidden
+            document.getElementById(toastId).addEventListener('hidden.bs.toast', () => {
+                document.getElementById(toastId)?.remove();
+            });
+        }
+
+
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
