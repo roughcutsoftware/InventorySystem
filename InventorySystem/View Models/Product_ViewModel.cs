@@ -1,5 +1,4 @@
 ﻿using InventorySystem.Core.DTOs;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventorySystem.Web.View_Models
 {
