@@ -1,4 +1,5 @@
 ﻿using InventorySystem.Core.DTOs;
+using InventorySystem.Core.DTOs.User;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.Infrastructure.Services;
@@ -164,5 +165,57 @@ namespace InventorySystem.web.Controllers
             return null;
         }
 
+        [HttpGet]
+        public IActionResult Register()
+        {
+
+            return View(new UserCreateViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(UserCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+
+                model.AvailableRoles = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "User", Text = "Normal User" },
+                    new SelectListItem { Value = "Admin", Text = "Administrator" }
+                };
+                return View(model);
+            }
+
+
+            var dto = new RegisterDto
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+                Role = model.SelectedRole
+            };
+
+            var result = await _authService.RegisterAsync(dto);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+
+            model.AvailableRoles = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "User", Text = "Normal User" },
+                new SelectListItem { Value = "Admin", Text = "Administrator" }
+            };
+
+            return View(model);
+        }
     }
 }
