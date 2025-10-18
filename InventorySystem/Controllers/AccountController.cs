@@ -94,6 +94,8 @@ namespace InventorySystem.web.Controllers
                 var result = await _userProfileService.UpdateProfileAsync(profileDto, userId);
                 if (result.Succeeded)
                 {
+                    var user = await _userProfileService.GetUserByIdAsync(userId);
+                    await _authService.RefreshSignInAsync(user);
                     TempData["ProfileSuccessMessage"] = "Profile updated successfully!";
                     return RedirectToAction("Profile");
                 }

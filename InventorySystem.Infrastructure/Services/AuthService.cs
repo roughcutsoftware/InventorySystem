@@ -46,6 +46,12 @@ namespace InventorySystem.Infrastructure.Services
             await _signInManager.SignOutAsync();
         }
 
+        public async Task RefreshSignInAsync(ApplicationUser user)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+        }
+
+
        
     }
 }
