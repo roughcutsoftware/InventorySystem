@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace InventorySystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:InventorySystem.Infrastructure/Migrations/20251018100242_InitialCreate.cs
-    public partial class InitialCreate : Migration
-========
     public partial class V1 : Migration
->>>>>>>> origin/Refractor:InventorySystem.Infrastructure/Migrations/20251018104313_V1.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
