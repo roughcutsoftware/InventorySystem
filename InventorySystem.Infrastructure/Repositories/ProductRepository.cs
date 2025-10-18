@@ -79,6 +79,7 @@ namespace InventorySystem.Infrastructure.Repositories
                 prd.CategoryId = obj.CategoryId;
                 prd.SupplierId = obj.SupplierId;
             }
+            //context.Entry(obj).State = EntityState.Modified;
         }
 
         public List<Product> GetAllWithCategoryAndSupplier()
