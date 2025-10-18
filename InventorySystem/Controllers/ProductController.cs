@@ -3,11 +3,14 @@ using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventorySystem.web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductService productService;

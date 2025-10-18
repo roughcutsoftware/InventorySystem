@@ -4,12 +4,14 @@ using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.View_Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventorySystem.web.Controllers
 {
     [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly IAuthService _authService;
@@ -21,12 +23,14 @@ namespace InventorySystem.web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
             if (ModelState.IsValid)
@@ -166,6 +170,7 @@ namespace InventorySystem.web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Register()
         {
 
@@ -173,6 +178,7 @@ namespace InventorySystem.web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register(UserCreateViewModel model)
         {
             if (!ModelState.IsValid)

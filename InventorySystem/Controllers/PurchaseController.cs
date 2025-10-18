@@ -2,12 +2,15 @@
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventorySystem.Web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize(Roles = "Admin")]
     public class PurchaseController : Controller
     {
         private readonly IPurchaseService _purchaseService;
