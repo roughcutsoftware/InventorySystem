@@ -62,6 +62,7 @@ namespace InventorySystem.Infrastructure.Services
             {
                 _notificationService.NotifyLowStock(product);
             }
+            Console.WriteLine($"🔹 Product Updated: {product.Name} | Old Stock: {oldStock} | New Stock: {product.QuantityInStock}");
 
 
         }

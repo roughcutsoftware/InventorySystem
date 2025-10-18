@@ -31,7 +31,7 @@ namespace InventorySystem.web.View_Models
         public string SelectedRole { get; set; }
 
         // For dropdown list in the view
-        public List<SelectListItem> AvailableRoles { get; } = new List<SelectListItem>
+        public List<SelectListItem> AvailableRoles { get; set; } = new List<SelectListItem>
         {
             new SelectListItem { Value = "User", Text = "Normal User" },
             new SelectListItem { Value = "Admin", Text = "Administrator" }

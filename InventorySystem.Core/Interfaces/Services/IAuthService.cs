@@ -1,9 +1,12 @@
-﻿using System;
+﻿using InventorySystem.Core.DTOs.User;
+using InventorySystem.Core.Entities;
+
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using InventorySystem.Core.Entities;
 
 namespace InventorySystem.Core.Interfaces.Services
 {
@@ -11,6 +14,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         Task<LoginResult> LoginAsync(string email, string password, bool rememberMe);
         Task LogoutAsync();
+        Task<IdentityResult> RegisterAsync(RegisterDto model);
     }
     public class LoginResult
     {

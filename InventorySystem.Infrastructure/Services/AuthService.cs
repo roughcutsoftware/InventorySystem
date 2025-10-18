@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using InventorySystem.Core.DTOs.User;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 namespace InventorySystem.Infrastructure.Services
 {
     public class AuthService : IAuthService
@@ -45,7 +47,31 @@ namespace InventorySystem.Infrastructure.Services
         {
             await _signInManager.SignOutAsync();
         }
+        public async Task<IdentityResult> RegisterAsync(RegisterDto model)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                CreatedAt = DateTime.Now
+            };
 
-       
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+               
+                await _userManager.AddToRoleAsync(user, model.Role);
+
+               
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                _logService.LogAction(user.UserName, "Register", $"User registered with role: {model.Role}");
+            }
+
+            return result;
+        }
+
+
+
     }
 }
