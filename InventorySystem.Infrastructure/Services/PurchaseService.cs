@@ -72,7 +72,7 @@ namespace InventorySystem.Infrastructure.Services
 
         public IEnumerable<Purchase> GetAllPurchases(int size = 20, int pageNumber = 1)
         {
-            return _purchaseRepository.GetAll(size, pageNumber);
+            return _purchaseRepository.GetAll(size, pageNumber).OrderByDescending(p=>p.PurchaseDate);
         }
 
         public PurchaseOrderDto? GetPurchaseById(int id)

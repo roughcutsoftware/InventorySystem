@@ -68,7 +68,7 @@ namespace InventorySystem.Infrastructure.Services
         }
         public IEnumerable<Sales> GetAllSales(int size = 20, int pageNumber = 1)
         {
-            return _salesRepository.GetAll(size, pageNumber);
+            return _salesRepository.GetAll(size, pageNumber).OrderByDescending(p=>p.SaleDate);
         }
         public SalesDto? GetSalesById(int id)
         {
