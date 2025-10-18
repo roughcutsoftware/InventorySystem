@@ -71,7 +71,12 @@ namespace InventorySystem.Infrastructure.Services
             return result;
         }
 
+        public async Task RefreshSignInAsync(ApplicationUser user)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+        }
 
 
+       
     }
 }

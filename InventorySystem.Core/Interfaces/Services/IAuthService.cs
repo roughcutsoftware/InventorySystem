@@ -14,7 +14,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         Task<LoginResult> LoginAsync(string email, string password, bool rememberMe);
         Task LogoutAsync();
-        Task<IdentityResult> RegisterAsync(RegisterDto model);
+        Task RefreshSignInAsync(ApplicationUser user);
     }
     public class LoginResult
     {

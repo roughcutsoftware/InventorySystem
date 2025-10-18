@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class ReportsController : Controller
     {
         private readonly IReportService _reportService;

@@ -392,7 +392,7 @@
         <ul class="sidebar-menu nav flex-column">
             <!-- Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -458,6 +458,13 @@
                     <a class="nav-link" asp-controller="Logs" asp-action="Index">
                         <i class="fas fa-clipboard-list"></i>
                         <span>System Logs</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Inventory" asp-action="Index">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Inventory Tracking</span>
                     </a>
                 </li>
             }

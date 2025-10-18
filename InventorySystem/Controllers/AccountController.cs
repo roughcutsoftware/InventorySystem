@@ -1,5 +1,7 @@
-﻿using InventorySystem.Core.DTOs.User;
+﻿using InventorySystem.Core.DTOs;
+using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Infrastructure.Services;
 using InventorySystem.web.View_Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,10 +12,11 @@ namespace InventorySystem.web.Controllers
     public class AccountController : Controller
     {
         private readonly IAuthService _authService;
-
-        public AccountController(IAuthService authService)
+        private readonly IUserProfileService _userProfileService;
+        public AccountController(IAuthService authService, IUserProfileService userProfileService)
         {
             _authService = authService;
+            _userProfileService = userProfileService;
         }
 
         [HttpGet]
@@ -31,10 +34,8 @@ namespace InventorySystem.web.Controllers
                     loginViewModel.Email,
                     loginViewModel.Password,
                     loginViewModel.RememberMe);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home");
+                if (result.Succeeded) {
+                    return RedirectToAction("Index", "Dashboard");
                 }
 
                 ModelState.AddModelError("", result.ErrorMessage);
@@ -55,58 +56,113 @@ namespace InventorySystem.web.Controllers
         {
             return View();
         }
-
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Profile()
         {
-           
-            return View(new UserCreateViewModel());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(UserCreateViewModel model)
-        {
-            if (!ModelState.IsValid)
+            var user = await GetCurrentUserAsync();
+            if (user == null)
             {
-               
-                model.AvailableRoles = new List<SelectListItem>
-                {
-                    new SelectListItem { Value = "User", Text = "Normal User" },
-                    new SelectListItem { Value = "Admin", Text = "Administrator" }
-                };
-                return View(model);
+                return RedirectToAction("Login");
             }
 
-            
-            var dto = new RegisterDto
+            var model = new ProfileViewModel
             {
-                UserName = model.Username,
-                Email = model.Email,
-                Password = model.Password,
-                Role = model.SelectedRole
-            };
-
-            var result = await _authService.RegisterAsync(dto);
-
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-           
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-           
-            model.AvailableRoles = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "User", Text = "Normal User" },
-                new SelectListItem { Value = "Admin", Text = "Administrator" }
+                FullName = user.UserName ?? user.Email,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Bio = user.Bio
             };
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Profile(ProfileViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return RedirectToAction("Login");
+                }
+                var profileDto = new ProfileDto
+                {
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Bio = model.Bio
+                };
+
+                var result = await _userProfileService.UpdateProfileAsync(profileDto, userId);
+                if (result.Succeeded)
+                {
+                    var user = await _userProfileService.GetUserByIdAsync(userId);
+                    await _authService.RefreshSignInAsync(user);
+                    TempData["ProfileSuccessMessage"] = "Profile updated successfully!";
+                    return RedirectToAction("Profile");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Settings()
+        {
+            var model = new SettingsViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Settings(SettingsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var settingsDto = new SettingsDto
+                {
+                    CurrentPassword = model.CurrentPassword,
+                    NewPassword = model.NewPassword,
+                    ConfirmPassword = model.ConfirmPassword
+                };
+
+                var result = await _userProfileService.UpdateSettingsAsync(settingsDto, userId);
+                if (result.Succeeded)
+                {
+                    TempData["SettingsSuccessMessage"] = "Settings updated successfully!";
+                    return RedirectToAction("Settings");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+
+            return View(model);
+        }
+
+        // Helper method to get current user
+        private async Task<ApplicationUser> GetCurrentUserAsync()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return await _userProfileService.GetUserByIdAsync(userId);
+            }
+            return null;
+        }
+
     }
 }

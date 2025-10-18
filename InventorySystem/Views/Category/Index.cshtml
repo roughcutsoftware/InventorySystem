@@ -1,85 +1,110 @@
-﻿@model IEnumerable<InventorySystem.Core.DTOs.CategoryDto>
+﻿@using InventorySystem.Core.DTOs
+@model List<CategoryDto>
 
 @{
     ViewData["Title"] = "Categories";
 }
 
-<div class="container py-4">
-    <style>
-        /* Subtle hover highlight for rows */
-        .table-row-hover:hover {
-            background-color: #f8f9fa;
-            transition: background-color 0.2s ease-in-out;
-        }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-        /* Improve button spacing */
-        .btn-sm i {
-            font-size: 0.85rem;
-        }
-
-        /* Card style enhancements */
-        .card {
-            border-radius: 12px;
-        }
-
-        /* Title styling */
-        h2 {
-            font-size: 1.75rem;
-        }
-    </style>
+<div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-semibold text-primary mb-0">
-            <i class="bi bi-tags-fill me-2"></i>Categories
+        <h2 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-folder me-2"></i>Categories
         </h2>
-        <a asp-action="Add" class="btn btn-primary px-3">
-            <i class="bi bi-plus-lg me-1"></i> Add New Category
+        <a asp-action="Add" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> New Category
         </a>
     </div>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info text-center shadow-sm">
-            No categories found. Click <strong>Add New Category</strong> to create one.
-        </div>
-    }
-    else
-    {
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @if (Model != null && Model.Any())
+            {
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col" class="text-secondary text-uppercase small fw-bold">Name</th>
-                            <th scope="col" class="text-secondary text-uppercase small fw-bold">Description</th>
-                            <th scope="col" class="text-secondary text-uppercase small fw-bold text-center">Actions</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var category in Model)
                         {
-                            <tr class="table-row-hover">
-                                <td class="fw-medium">@item.Name</td>
-                                <td class="text-muted">@item.Description</td>
+                            <tr>
+                                <td class="fw-semibold">@category.CategoryId</td>
+                                <td>
+                                    <strong>@category.Name</strong>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(category.Description))
+                                    {
+                                        <span class="text-muted">@category.Description</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No description</span>
+                                    }
+                                </td>
                                 <td class="text-center">
-                                    <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-outline-info btn-sm me-1">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-outline-warning btn-sm me-1">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-outline-danger btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@category.CategoryId"
+                                           class="btn btn-sm btn-outline-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@category.CategoryId"
+                                           class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@category.CategoryId"
+                                           class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-            </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-folder-x fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">No categories found</h5>
+                    <p class="text-muted">Get started by creating your first category.</p>
+                    <a asp-action="Add" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Add Category
+                    </a>
+                </div>
+            }
         </div>
-    }
+    </div>
 </div>
 
-@section Scripts {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
-}
+<style>
+    .table th {
+        white-space: nowrap;
+    }
+
+    .btn-group .btn {
+        margin-right: 4px;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #0dcaf0;
+        color: white;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>

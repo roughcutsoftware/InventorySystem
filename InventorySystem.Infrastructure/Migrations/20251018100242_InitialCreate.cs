@@ -6,7 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace InventorySystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
+<<<<<<<< HEAD:InventorySystem.Infrastructure/Migrations/20251018100242_InitialCreate.cs
     public partial class InitialCreate : Migration
+========
+    public partial class V1 : Migration
+>>>>>>>> origin/Refractor:InventorySystem.Infrastructure/Migrations/20251018104313_V1.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,6 +35,7 @@ namespace InventorySystem.Infrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

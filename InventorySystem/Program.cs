@@ -71,6 +71,8 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportExportService, ReportExportService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 

@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventorySystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
+<<<<<<<< HEAD:InventorySystem.Infrastructure/Migrations/20251018100242_InitialCreate.Designer.cs
     [Migration("20251018100242_InitialCreate")]
     partial class InitialCreate
+========
+    [Migration("20251018104313_V1")]
+    partial class V1
+>>>>>>>> origin/Refractor:InventorySystem.Infrastructure/Migrations/20251018104313_V1.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +37,9 @@ namespace InventorySystem.Infrastructure.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

@@ -11,6 +11,16 @@ namespace InventorySystem.web.Controllers
             _dashboardService = dashboardService;
 
         }
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var startDate = DateTime.Today.AddDays(-30);
+            var endDate = DateTime.Today;
+            var summary = _dashboardService.GetDashboardSummary(startDate, endDate);
+            return View(summary);
+        }
+
+        [HttpPost]
         public IActionResult Index(DateTime? from , DateTime? to)
         {
             // If user didn't specify a date range, default to last 30 days
