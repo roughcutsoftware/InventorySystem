@@ -1,9 +1,12 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize(Roles = "Admin")]
     public class SupplierController : Controller
     {
         private readonly ISupplierService _supplierService;

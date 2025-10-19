@@ -1,9 +1,12 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

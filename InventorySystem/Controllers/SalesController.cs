@@ -1,12 +1,15 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace InventorySystem.Web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class SalesController : Controller
     {
         private readonly ISalesService _salesService;

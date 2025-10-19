@@ -1,8 +1,11 @@
 ﻿using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class DashBoardController : Controller
     {
         private readonly IDashboardService _dashboardService;

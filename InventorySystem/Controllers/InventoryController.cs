@@ -1,9 +1,12 @@
 ﻿using InventorySystem.Core.DTOs.Inventory;
 using InventorySystem.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class InventoryController : Controller
     {
         private readonly IInventoryService inventoryService;

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Web.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class ReportsController : Controller
     {
         private readonly IReportService _reportService;
@@ -20,12 +21,10 @@ namespace InventorySystem.Web.Controllers
         // -------------------- View Pages --------------------
 
         [HttpGet]
-        public IActionResult GenerateReport() => View();
-
-        [HttpGet]
         public IActionResult SalesReport() => View();
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult PurchaseReport() => View();
 
         [HttpGet]
@@ -45,6 +44,7 @@ namespace InventorySystem.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult PurchaseReportData(ReportViewModel reportView)
         {
             if (!ModelState.IsValid)
@@ -79,6 +79,7 @@ namespace InventorySystem.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult ExportPurchaseReport(ReportViewModel reportView)
         {
             if (!ModelState.IsValid)

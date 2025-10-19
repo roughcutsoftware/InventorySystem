@@ -1,10 +1,13 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Interfaces.Services;
 using InventorySystem.web.View_Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.web.Controllers
 {
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
     public class CustomerController : Controller
     {
         private readonly ICustomerService customerService;
