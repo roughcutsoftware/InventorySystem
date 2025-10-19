@@ -1,0 +1,134 @@
+@model IEnumerable<InventorySystem.Core.Entities.SystemLog>
+@{
+    ViewData["Title"] = "System Logs";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">System Logs</h1>
+        <div>
+            <form asp-action="Export" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Export to CSV
+                </button>
+            </form>
+            <form asp-action="Clear" method="post" class="d-inline ms-2" 
+                  onsubmit="return confirm('Are you sure you want to clear all logs? This action cannot be undone.');">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash me-2"></i>Clear Logs
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-3x text-gray-300 mb-3"></i>
+                    <p class="text-gray-500">No logs found</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var log in Model)
+                            {
+                                <tr>
+                                    <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@log.User</td>
+                                    <td>
+                                        <span class="badge bg-@GetActionBadgeColor(log.Action)">
+                                            @log.Action
+                                        </span>
+                                    </td>
+                                    <td>@log.Details</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            Showing page @ViewBag.CurrentPage of @ViewBag.TotalPages
+                        </div>
+                        <nav>
+                            <ul class="pagination mb-0">
+                                @if (ViewBag.CurrentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize })">
+                                            Previous
+                                        </a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })">
+                                            Next
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#logsTable').DataTable({
+                order: [[0, 'desc']],
+                pageLength: @ViewBag.PageSize,
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search logs..."
+                }
+            });
+        });
+    </script>
+}
+
+@functions {
+    string GetActionBadgeColor(string action)
+    {
+        return action.ToLower() switch
+        {
+            var a when a.Contains("error") => "danger",
+            var a when a.Contains("create") || a.Contains("add") => "success",
+            var a when a.Contains("update") || a.Contains("edit") => "info",
+            var a when a.Contains("delete") || a.Contains("remove") => "warning",
+            _ => "secondary"
+        };
+    }
+}
