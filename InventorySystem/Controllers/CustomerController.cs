@@ -17,7 +17,7 @@ namespace InventorySystem.web.Controllers
             this.customerService = customerService;
         }
 
-        public IActionResult Index(int size = 3, int pageNumber = 1)
+        public IActionResult Index(int size = 5, int pageNumber = 1)
         {
             var customer = customerService.GetAllCustomers(size, pageNumber);
             return View(customer);

@@ -3,6 +3,7 @@ using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -12,7 +13,7 @@ namespace InventorySystem.Infrastructure.Services
         private readonly IMapper mapper;
         private readonly ILogService _logService;
 
-        public ProductService (IProductRepository _prdRepo, IMapper _mapper,ILogService logService)
+        public ProductService(IProductRepository _prdRepo, IMapper _mapper, ILogService logService)
         {
             prdRepo = _prdRepo;
             mapper = _mapper;
@@ -77,5 +78,12 @@ namespace InventorySystem.Infrastructure.Services
                 "Product Updated",
                 $"Product {dto.ProductId} Updated.");
         }
+
+        public IEnumerable<ProductDto> GetProductsByCategoryId(int categoryId)
+        {
+            var products = prdRepo.GetProductsByCategoryId(categoryId);
+            return mapper.Map<IEnumerable<ProductDto>>(products);
+        }
+
     }
 }

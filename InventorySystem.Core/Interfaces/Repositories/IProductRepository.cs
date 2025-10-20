@@ -12,5 +12,6 @@ namespace InventorySystem.Core.Interfaces.Repositories
         List<Product> GetAllWithCategoryAndSupplier();
         List<Product> GetAllWithCategoryAndSupplier(int size, int pageNumber);
         int GetTotalCount();
+        IEnumerable<Product> GetProductsByCategoryId(int categoryId);
     }
 }
