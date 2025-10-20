@@ -8,6 +8,7 @@
     </h4>
 
     <form action="/Inventory/AdjustStock" method="post">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="ProductId" />
 
         <div class="mb-3">
