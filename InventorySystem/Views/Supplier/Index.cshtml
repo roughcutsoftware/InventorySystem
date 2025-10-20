@@ -1,4 +1,4 @@
-﻿@model IEnumerable<InventorySystem.Core.DTOs.SupplierDto>
+﻿@model InventorySystem.Core.DTOs.PaginationDto<InventorySystem.Core.DTOs.SupplierDto>
 
 @{
     ViewData["Title"] = "Suppliers";
@@ -18,7 +18,7 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
-            @if (Model != null && Model.Any())
+            @if (Model != null && Model.Items.Any())
             {
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
@@ -33,32 +33,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var supplier in Model)
+                        @foreach (var supplier in Model.Items)
                         {
                             <tr>
-                                <td>
-                                    <strong>@supplier.Name</strong>
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(supplier.CompanyName))
-                                    {
-                                        @supplier.CompanyName
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(supplier.ContactName))
-                                    {
-                                        @supplier.ContactName
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
+                                <td><strong>@supplier.Name</strong></td>
+                                <td>@(string.IsNullOrEmpty(supplier.CompanyName) ? "-" : supplier.CompanyName)</td>
+                                <td>@(string.IsNullOrEmpty(supplier.ContactName) ? "-" : supplier.ContactName)</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(supplier.Email))
                                     {
@@ -117,6 +97,36 @@
                         }
                     </tbody>
                 </table>
+
+                <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+                    <p class="mb-0 text-muted">
+                        Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong>
+                        — Total suppliers: <strong>@Model.TotalCount</strong>
+                    </p>
+
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-size="@Model.PageSize">
+                                    Previous
+                                </a>
+                            </li>
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-size="@Model.PageSize">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-size="@Model.PageSize">
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             }
             else
             {
@@ -159,5 +169,12 @@
     .btn-outline-danger:hover {
         background-color: #dc3545;
         color: white;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff !important;
+        font-weight: bold;
     }
 </style>

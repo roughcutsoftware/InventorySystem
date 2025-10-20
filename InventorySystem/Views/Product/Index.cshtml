@@ -1,4 +1,4 @@
-﻿@model IEnumerable<InventorySystem.Core.DTOs.ProductDto>
+﻿@model InventorySystem.Core.DTOs.PaginationDto<InventorySystem.Core.DTOs.ProductDto>
 
 @{
     ViewData["Title"] = "Products";
@@ -18,13 +18,15 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
-            @if (Model != null && Model.Any())
+            @if (Model != null && Model.Items.Any())
             {
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Product Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Supplier</th>
                             <th scope="col" class="text-center">Stock</th>
                             <th scope="col" class="text-end">Price</th>
                             <th scope="col" class="text-center">Status</th>
@@ -32,13 +34,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var product in Model)
+                        @foreach (var product in Model.Items)
                         {
                             <tr>
                                 <td class="fw-semibold">@product.ProductId</td>
-                                <td>
-                                    <strong>@product.Name</strong>
-                                </td>
+                                <td><strong>@product.Name</strong></td>
+                                <td>@product.CategoryName</td>
+                                <td>@product.SupplierName</td>
                                 <td class="text-center">
                                     @if (product.QuantityInStock <= 0)
                                     {
@@ -59,9 +61,7 @@
                                         </span>
                                     }
                                 </td>
-                                <td class="text-end fw-semibold">
-                                    @product.UnitPrice.ToString("C")
-                                </td>
+                                <td class="text-end fw-semibold">@product.UnitPrice.ToString("C")</td>
                                 <td class="text-center">
                                     @if (product.IsActive == true)
                                     {
@@ -96,6 +96,36 @@
                         }
                     </tbody>
                 </table>
+
+                <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+                    <p class="mb-0 text-muted">
+                        Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong>
+                        — Total items: <strong>@Model.TotalCount</strong>
+                    </p>
+
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-size="@Model.PageSize">
+                                    Previous
+                                </a>
+                            </li>
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-size="@Model.PageSize">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                                <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-size="@Model.PageSize">
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             }
             else
             {
@@ -116,22 +146,34 @@
     .table th {
         white-space: nowrap;
     }
+
     .badge {
         font-size: 0.9rem;
     }
+
     .btn-group .btn {
         margin-right: 4px;
     }
+
     .btn-outline-info:hover {
         background-color: #0dcaf0;
         color: white;
     }
+
     .btn-outline-warning:hover {
         background-color: #ffc107;
         color: black;
     }
+
     .btn-outline-danger:hover {
         background-color: #dc3545;
         color: white;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd; 
+        border-color: #0d6efd;
+        color: #fff !important; 
+        font-weight: bold;
     }
 </style>

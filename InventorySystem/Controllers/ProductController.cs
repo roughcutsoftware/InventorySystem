@@ -24,7 +24,7 @@ namespace InventorySystem.web.Controllers
             this.supplierService = supplierService;
         }
 
-        public IActionResult Index(int size = 20, int pageNumber = 1)
+        public IActionResult Index(int size = 3, int pageNumber = 1)
         {
             var products = productService.GetAllProducts(size, pageNumber);
             return View(products);
@@ -48,8 +48,8 @@ namespace InventorySystem.web.Controllers
             var vm = new Product_ViewModel()
             {
                 Product = new ProductDto { CreatedAt = DateTime.Now },
-                Categories = categoryService.GetAllCategories(),
-                Suppliers = supplierService.GetAllSuppliers()
+                Categories = categoryService.GetAllCategories().Items,
+                Suppliers = supplierService.GetAllSuppliers().Items
             };
             return View(vm);
         }
@@ -64,8 +64,8 @@ namespace InventorySystem.web.Controllers
                 return RedirectToAction("Index");
             }
 
-            vm.Categories = categoryService.GetAllCategories();
-            vm.Suppliers = supplierService.GetAllSuppliers();
+            vm.Categories = categoryService.GetAllCategories().Items;
+            vm.Suppliers = supplierService.GetAllSuppliers().Items;
 
             return View("Add", vm);
         }
@@ -83,8 +83,8 @@ namespace InventorySystem.web.Controllers
                 var vm = new Product_ViewModel()
                 {
                     Product = product,
-                    Categories = categoryService.GetAllCategories(),
-                    Suppliers = supplierService.GetAllSuppliers()
+                    Categories = categoryService.GetAllCategories().Items,
+                    Suppliers = supplierService.GetAllSuppliers().Items
                 };
                 return View(vm);
             }
@@ -100,8 +100,8 @@ namespace InventorySystem.web.Controllers
                 return RedirectToAction("Index");
             }
 
-            vm.Categories = categoryService.GetAllCategories();
-            vm.Suppliers = supplierService.GetAllSuppliers();
+            vm.Categories = categoryService.GetAllCategories().Items;
+            vm.Suppliers = supplierService.GetAllSuppliers().Items;
 
             return View("Edit", vm);
         }

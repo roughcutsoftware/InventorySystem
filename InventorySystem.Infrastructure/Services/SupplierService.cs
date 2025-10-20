@@ -4,6 +4,7 @@ using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -37,10 +38,24 @@ namespace InventorySystem.Infrastructure.Services
                 $"Supplier {id} Deleted.");
         }
 
-        public List<SupplierDto> GetAllSuppliers(int size = 20, int pageNumber = 1)
+        //public List<SupplierDto> GetAllSuppliers(int size = 20, int pageNumber = 1)
+        //{
+        //    var supplires = _supplierRepository.GetAll(size, pageNumber);
+        //    return _mapper.Map<List<SupplierDto>>(supplires);
+        //}
+
+        public PaginationDto<SupplierDto> GetAllSuppliers(int size = 20, int pageNumber = 1)
         {
-            var supplires = _supplierRepository.GetAll(size, pageNumber);
-            return _mapper.Map<List<SupplierDto>>(supplires);
+            var suppliers = _supplierRepository.GetAll(size, pageNumber);
+            var totalCount = _supplierRepository.GetTotalCount();
+
+            return new PaginationDto<SupplierDto>
+            {
+                Items = _mapper.Map<List<SupplierDto>>(suppliers),
+                PageNumber = pageNumber,
+                PageSize = size,
+                TotalCount = totalCount
+            };
         }
 
         public SupplierDto? GetSupplierById(int id)

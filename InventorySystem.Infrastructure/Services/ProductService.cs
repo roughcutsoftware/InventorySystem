@@ -42,22 +42,31 @@ namespace InventorySystem.Infrastructure.Services
                 $"Product {id} Deleted.");
         }
 
-        public List<ProductDto> GetAllProducts(int size = 20, int pageNumber = 1)
+        //public List<ProductDto> GetAllProducts(int size = 20, int pageNumber = 1)
+        //{
+        //    var prd = prdRepo.GetAll(size, pageNumber);
+        //    return mapper.Map<List<ProductDto>>(prd);
+        //}
+
+        public PaginationDto<ProductDto> GetAllProducts(int size = 20, int pageNumber = 1)
         {
-            var prd = prdRepo.GetAll(size, pageNumber);
-            return mapper.Map<List<ProductDto>>(prd);
+            var products = prdRepo.GetAllWithCategoryAndSupplier(size, pageNumber);
+            var totalCount = prdRepo.GetTotalCount();
+
+            return new PaginationDto<ProductDto>
+            {
+                Items = mapper.Map<List<ProductDto>>(products),
+                PageNumber = pageNumber,
+                PageSize = size,
+                TotalCount = totalCount
+            };
         }
 
         public ProductDto? GetProductById(int id)
         {
-            var prd = prdRepo.GetByID(id);
-            if (prd != null)
-            {
-                return mapper.Map<ProductDto>(prd);
-            } else
-            {
-                return null;
-            } 
+            var prd = prdRepo.GetAllWithCategoryAndSupplier()
+                     .FirstOrDefault(p => p.ProductId == id);
+            return prd != null ? mapper.Map<ProductDto>(prd) : null;
         }
 
         public void UpdateProduct(ProductDto dto)

@@ -36,10 +36,24 @@ namespace InventorySystem.Infrastructure.Services
                 $"Category {id} Deleted.");
         }
 
-        public List<CategoryDto> GetAllCategories(int size = 20, int pageNumber = 1)
+        //public List<CategoryDto> GetAllCategories(int size = 20, int pageNumber = 1)
+        //{
+        //    var categories = _categoryRepository.GetAll(size,pageNumber);
+        //    return _mapper.Map<List<CategoryDto>>(categories);
+        //}
+
+        public PaginationDto<CategoryDto> GetAllCategories(int size = 20, int pageNumber = 1)
         {
-            var categories = _categoryRepository.GetAll(size,pageNumber);
-            return _mapper.Map<List<CategoryDto>>(categories);
+            var categories = _categoryRepository.GetAll(size, pageNumber);
+            var totalCount = _categoryRepository.GetTotalCount();
+
+            return new PaginationDto<CategoryDto>
+            {
+                Items = _mapper.Map<List<CategoryDto>>(categories),
+                PageNumber = pageNumber,
+                PageSize = size,
+                TotalCount = totalCount
+            };
         }
 
         public CategoryDto? GetCategoryById(int id)

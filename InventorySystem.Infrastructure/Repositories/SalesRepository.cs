@@ -57,6 +57,11 @@ namespace InventorySystem.Infrastructure.Repositories
                 .FirstOrDefault(s => s.SaleId == id);
         }
 
+        public int GetTotalCount()
+        {
+            return _context.Sales.Count();
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

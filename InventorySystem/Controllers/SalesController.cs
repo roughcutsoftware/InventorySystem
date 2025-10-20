@@ -1,6 +1,7 @@
 ﻿using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +30,26 @@ namespace InventorySystem.Web.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int page = 1)
+        public IActionResult Index(int size = 3, int pageNumber = 1)
         {
-            var sales = _salesService.GetAllSales(20, page);
-            return View(sales);
+            var salesPage = _salesService.GetAllSales(size, pageNumber);
+
+            var dto = new PaginationDto<SalesDto>
+            {
+                PageNumber = salesPage.PageNumber,
+                PageSize = salesPage.PageSize,
+                TotalCount = salesPage.TotalCount,
+                Items = salesPage.Items.Select(s => new SalesDto
+                {
+                    SaleId = s.SaleId,
+                    SaleDate = s.SaleDate,
+                    CustomerName = s.Customer?.Name,
+                    TotalAmount = s.TotalAmount,
+                    Status = s.Status
+                }).ToList()
+            };
+
+            return View(dto);
         }
 
         public IActionResult Details(int id)
@@ -93,7 +110,7 @@ namespace InventorySystem.Web.Controllers
         }
         private void LoadDropdowns()
         {
-            var customers = _customerService.GetAllCustomers();
+            var customers = _customerService.GetAllCustomers().Items;
             var products = _productService.GetAllProducts();
 
             ViewBag.Customers = new SelectList(customers, "CustomerId", "Name");

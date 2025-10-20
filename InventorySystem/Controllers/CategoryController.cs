@@ -16,9 +16,9 @@ namespace InventorySystem.web.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(int size = 3, int pageNumber = 1)
         {
-            var categories = _categoryService.GetAllCategories();
+            var categories = _categoryService.GetAllCategories(size, pageNumber);
             return View(categories);
         }
 
@@ -40,7 +40,6 @@ namespace InventorySystem.web.Controllers
             return RedirectToAction(nameof(Index));
            
         }
-
 
         [HttpGet]
         public IActionResult Edit(int id)
@@ -70,9 +69,9 @@ namespace InventorySystem.web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int CategoryId)
         {
-            _categoryService.DeleteCategory(id);
+            _categoryService.DeleteCategory(CategoryId);
             return RedirectToAction(nameof(Index));
         }
 

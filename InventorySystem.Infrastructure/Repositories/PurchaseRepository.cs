@@ -48,6 +48,11 @@ namespace InventorySystem.Infrastructure.Repositories
                 .FirstOrDefault(p => p.PurchaseId == id);
         }
 
+        public int GetTotalCount()
+        {
+            return _context.Purchases.Count();
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

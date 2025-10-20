@@ -5,5 +5,6 @@ namespace InventorySystem.Core.Interfaces.Repositories
 {
     public interface ISalesRepository:IRepository<Sales>
     {
+        int GetTotalCount();
     }
 }

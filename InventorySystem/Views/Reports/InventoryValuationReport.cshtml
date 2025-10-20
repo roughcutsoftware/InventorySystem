@@ -33,55 +33,47 @@
             <div class="card-body">
                 <!-- Summary Cards -->
                 <div class="row mb-4">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3">
                         <div class="card bg-primary text-white">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">Total Products</h6>
-                                        <h3 class="mb-0">@Model.Count</h3>
-                                    </div>
-                                    <i class="bi bi-box fa-2x opacity-50"></i>
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Total Products</h6>
+                                    <h3 class="mb-0">@Model.Count</h3>
                                 </div>
+                                <i class="bi bi-box fa-2x opacity-50"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3">
                         <div class="card bg-success text-white">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">Total Value</h6>
-                                        <h3 class="mb-0">@Model.Sum(i => i.TotalValue).ToString("C")</h3>
-                                    </div>
-                                    <i class="bi bi-currency-dollar fa-2x opacity-50"></i>
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Total Value</h6>
+                                    <h3 class="mb-0">@Model.Sum(i => i.TotalValue).ToString("C")</h3>
                                 </div>
+                                <i class="bi bi-currency-dollar fa-2x opacity-50"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3">
                         <div class="card bg-info text-white">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">Units in Stock</h6>
-                                        <h3 class="mb-0">@Model.Sum(i => i.QuantityInStock)</h3>
-                                    </div>
-                                    <i class="bi bi-boxes fa-2x opacity-50"></i>
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Units in Stock</h6>
+                                    <h3 class="mb-0">@Model.Sum(i => i.QuantityInStock)</h3>
                                 </div>
+                                <i class="bi bi-boxes fa-2x opacity-50"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3">
                         <div class="card bg-warning text-white">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-0">Low Stock Items</h6>
-                                        <h3 class="mb-0">@Model.Count(i => i.QuantityInStock < 10)</h3>
-                                    </div>
-                                    <i class="bi bi-exclamation-triangle fa-2x opacity-50"></i>
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">Low Stock Items</h6>
+                                    <h3 class="mb-0">@Model.Count(i => i.QuantityInStock < 10)</h3>
                                 </div>
+                                <i class="bi bi-exclamation-triangle fa-2x opacity-50"></i>
                             </div>
                         </div>
                     </div>
@@ -92,19 +84,19 @@
                     <table class="table table-hover align-middle mb-0" id="inventoryTable">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">Product Name</th>
-                                <th scope="col">Category</th>
-                                <th scope="col" class="text-center">Quantity</th>
-                                <th scope="col" class="text-end">Cost Price</th>
-                                <th scope="col" class="text-end">Total Value</th>
-                                <th scope="col" class="text-center">Status</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-end">Cost Price</th>
+                                <th class="text-end">Total Value</th>
+                                <th class="text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
                                 <tr class="@(item.QuantityInStock < 10 ? "table-warning" : "")">
-                                    <td class="fw-semibold">@item.ProductName</td>
+                                    <td>@item.ProductName</td>
                                     <td>@item.CategoryName</td>
                                     <td class="text-center">@item.QuantityInStock</td>
                                     <td class="text-end">@item.CostPrice.ToString("C")</td>
@@ -148,7 +140,7 @@
                     </table>
                 </div>
 
-                <!-- Chart Section -->
+                <!-- Charts -->
                 <div class="row mt-4">
                     <div class="col-md-6 mb-4">
                         <div class="card shadow-sm border-0">
@@ -193,21 +185,21 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Initialize DataTable
+            // DataTable initialization with centered search
             $('#inventoryTable').DataTable({
-                "pageLength": 25,
+                "paging": false, // Disable pagination
+                "searching": true,
+                "ordering": true,
                 "order": [[4, "desc"]],
                 "language": {
-                    "search": "Search products:",
-                    "lengthMenu": "Show _MENU_ products per page"
+                    "search": "Search products:"
                 },
-                "dom": '<"row"<"col-sm-6"l><"col-sm-6"f>>rtip'
+                "dom": '<"d-flex justify-content-center my-3"f>rt', // Center the search input
             });
 
             @if (Model != null && Model.Any())
             {
                 <text>
-                // Group data by category for charts
                 var categoryData = @Html.Raw(Json.Serialize(
                     Model.GroupBy(i => i.CategoryName)
                          .Select(g => new { 
@@ -223,23 +215,12 @@
                     type: 'pie',
                     data: {
                         labels: categoryData.map(d => d.category),
-                        datasets: [{
-                            data: categoryData.map(d => d.value),
-                            backgroundColor: [
-                                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', 
-                                '#e74a3b', '#858796', '#5a5c69', '#2e59d9'
-                            ]
+                        datasets: [{ 
+                            data: categoryData.map(d => d.value), 
+                            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'] 
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
                 });
 
                 // Stock Quantity Chart
@@ -248,29 +229,38 @@
                     type: 'bar',
                     data: {
                         labels: categoryData.map(d => d.category),
-                        datasets: [{
-                            label: 'Quantity in Stock',
-                            data: categoryData.map(d => d.quantity),
-                            backgroundColor: '#4e73df'
-                        }]
+                        datasets: [{ label: 'Quantity in Stock', data: categoryData.map(d => d.quantity), backgroundColor: '#4e73df' }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
                 });
                 </text>
             }
         });
     </script>
 }
+<style>
+.dataTables_filter {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 35px;
+}
+
+.dataTables_filter label {
+    width: auto;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px; git branch
+}
+
+.dataTables_filter input {
+    flex: 1; 
+    max-width: 500px; 
+    padding: 10px 15px; 
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+}
+</style>
+

@@ -4,6 +4,7 @@ using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -70,9 +71,23 @@ namespace InventorySystem.Infrastructure.Services
             _logService.LogAction("System", "Create Purchase Order", $"Purchase #{purchase.PurchaseId} created.");
         }
 
-        public IEnumerable<Purchase> GetAllPurchases(int size = 20, int pageNumber = 1)
+        //public IEnumerable<Purchase> GetAllPurchases(int size = 20, int pageNumber = 1)
+        //{
+        //    return _purchaseRepository.GetAll(size, pageNumber).OrderByDescending(p=>p.PurchaseDate);
+        //}
+
+        public PaginationDto<Purchase> GetAllPurchases(int size = 20, int pageNumber = 1)
         {
-            return _purchaseRepository.GetAll(size, pageNumber).OrderByDescending(p=>p.PurchaseDate);
+            var purchases = _purchaseRepository.GetAll(size, pageNumber);
+            var totalCount = _purchaseRepository.GetTotalCount();
+
+            return new PaginationDto<Purchase>
+            {
+                Items = _mapper.Map<List<Purchase>>(purchases),
+                PageNumber = pageNumber,
+                PageSize = size,
+                TotalCount = totalCount
+            };
         }
 
         public PurchaseOrderDto? GetPurchaseById(int id)

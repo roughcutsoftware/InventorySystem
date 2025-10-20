@@ -16,9 +16,9 @@ namespace InventorySystem.Web.Controllers
             _supplierService = supplierService;
         }
 
-        public IActionResult Index(int page = 1, int size = 20)
+        public IActionResult Index(int size = 3, int pageNumber = 1)
         {
-            var suppliers = _supplierService.GetAllSuppliers(size, page);
+            var suppliers = _supplierService.GetAllSuppliers(size, pageNumber);
             return View(suppliers);
         }
 
@@ -78,9 +78,9 @@ namespace InventorySystem.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int SupplierId)
         {
-            _supplierService.DeleteSupplier(id);
+            _supplierService.DeleteSupplier(SupplierId);
             return RedirectToAction(nameof(Index));
         }
     }

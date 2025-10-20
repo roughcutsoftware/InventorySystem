@@ -69,5 +69,10 @@ namespace InventorySystem.Infrastructure.Repositories
                 cstm.Phone = obj.Phone;
             }
         }
+
+        public int GetTotalCount()
+        {
+            return context.Customers.Count();
+        }
     }
 }

@@ -14,6 +14,11 @@ namespace InventorySystem.Infrastructure.Repositories
             _context = context;
         }
 
+        public int GetTotalCount()
+        {
+            return _context.Suppliers.Count();
+        }
+
         void IRepository<Supplier>.Add(Supplier obj)
         {
             _context.Suppliers.Add(obj);

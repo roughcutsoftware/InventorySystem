@@ -1,9 +1,9 @@
-﻿@model IEnumerable<InventorySystem.Core.DTOs.PurchaseOrderDto>
+﻿@model InventorySystem.Core.DTOs.PaginationDto<InventorySystem.Core.DTOs.PurchaseOrderDto>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold text-primary"><i class="bi bi-cart4 me-2"></i>Purchases</h2>
-        <a asp-action="Create" class="btn btn-primary">
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
             <i class="bi bi-plus-circle me-1"></i> Create New Purchase
         </a>
     </div>
@@ -19,7 +19,7 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>ID</th>
@@ -30,51 +30,55 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (Model.Items != null && Model.Items.Any())
                     {
-                        @foreach (var p in Model)
+                        @foreach (var p in Model.Items)
                         {
                             <tr>
                                 <td>@p.PurchaseId</td>
                                 <td>@p.PurchaseDate.ToString("yyyy-MM-dd HH:mm")</td>
-                                <td>
+                                <td class="text-center">
                                     @switch (p.Status?.ToLower())
                                     {
                                         case "pending":
-                                            <span class="badge bg-warning text-dark">Pending</span>
+                                            <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
                                             break;
                                         case "received":
-                                            <span class="badge bg-success">Received</span>
+                                            <span class="badge bg-success px-3 py-2">Received</span>
                                             break;
                                         case "cancelled":
-                                            <span class="badge bg-danger">Cancelled</span>
+                                            <span class="badge bg-danger px-3 py-2">Cancelled</span>
                                             break;
                                         default:
-                                            <span class="badge bg-secondary">@p.Status</span>
+                                            <span class="badge bg-secondary px-3 py-2">@p.Status</span>
                                             break;
                                     }
                                 </td>
-                                <td>@p.TotalAmount.ToString("C")</td>
+                                <td class="text-end">@p.TotalAmount.ToString("C")</td>
                                 <td class="text-center">
-                                    <a asp-action="Details" asp-route-id="@p.PurchaseId" class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i> Details
-                                    </a>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@p.PurchaseId"
+                                           class="btn btn-sm btn-outline-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
 
-                                    @if (p.Status == "Pending")
-                                    {
-                                        <form asp-action="Receive" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-success"
-                                                    onclick="return confirm('Mark this purchase as received?');">
-                                                <i class="bi bi-box-seam"></i> Receive
-                                            </button>
-                                        </form>
-                                        <form asp-action="Cancel" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Cancel this purchase?');">
-                                                <i class="bi bi-x-circle"></i> Cancel
-                                            </button>
-                                        </form>
-                                    }
+                                        @if (p.Status?.ToLower() == "pending")
+                                        {
+                                            <form asp-action="Receive" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Mark as Received"
+                                                        onclick="return confirm('Mark this purchase as received?');">
+                                                    <i class="bi bi-box-seam"></i>
+                                                </button>
+                                            </form>
+
+                                            <form asp-action="Cancel" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel Purchase"
+                                                        onclick="return confirm('Cancel this purchase?');">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -91,6 +95,62 @@
             </table>
         </div>
     </div>
+
+    <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+        <p class="mb-0 text-muted">
+            Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong>
+            — Total items: <strong>@Model.TotalCount</strong>
+        </p>
+
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-size="@Model.PageSize">
+                        Previous
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-size="@Model.PageSize">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-size="@Model.PageSize">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    .table th {
+        white-space: nowrap;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+    }
+
+    .btn-group .btn {
+        margin-right: 4px;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #0dcaf0;
+        color: white;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff !important;
+        font-weight: bold;
+    }
+</style>

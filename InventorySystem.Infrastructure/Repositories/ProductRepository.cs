@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InventorySystem.Infrastructure.Repositories
 {
@@ -37,30 +35,54 @@ namespace InventorySystem.Infrastructure.Repositories
         {
             IQueryable<Product> products = context.Products;
 
-            if (!String.IsNullOrEmpty(includes))
+            if (!string.IsNullOrEmpty(includes))
             {
                 products = products.Include(includes);
             }
-            return products.Skip((pageNumber - 1) * size)
+
+            return products
+                .Skip((pageNumber - 1) * size)
                 .Take(size)
                 .AsNoTracking()
                 .ToList();
+        }
+
+        public List<Product> GetAllWithCategoryAndSupplier(int size, int pageNumber)
+        {
+            return context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Supplier)
+                .OrderBy(p => p.ProductId)
+                .Skip((pageNumber - 1) * size)
+                .Take(size)
+                .AsNoTracking()
+                .ToList();
+        }
+
+        public List<Product> GetAllWithCategoryAndSupplier()
+        {
+            return context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Supplier)
+                .AsNoTracking()
+                .ToList();
+        }
+
+        public int GetTotalCount()
+        {
+            return context.Products.Count();
         }
 
         Product? IRepository<Product>.GetByID(int id, string includes)
         {
             IQueryable<Product> products = context.Products;
 
-            if (!String.IsNullOrEmpty(includes))
+            if (!string.IsNullOrEmpty(includes))
             {
                 products = products.Include(includes);
             }
-            return products.FirstOrDefault(p => p.ProductId == id);
-        }
 
-        public void SaveChanges()
-        {
-            context.SaveChanges();
+            return products.FirstOrDefault(p => p.ProductId == id);
         }
 
         void IRepository<Product>.Update(Product obj)
@@ -79,15 +101,11 @@ namespace InventorySystem.Infrastructure.Repositories
                 prd.CategoryId = obj.CategoryId;
                 prd.SupplierId = obj.SupplierId;
             }
-            //context.Entry(obj).State = EntityState.Modified;
         }
 
-        public List<Product> GetAllWithCategoryAndSupplier()
+        public void SaveChanges()
         {
-            return context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Supplier)
-                .ToList();
+            context.SaveChanges();
         }
     }
 }

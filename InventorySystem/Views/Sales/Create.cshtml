@@ -29,9 +29,12 @@
                 <td>
                     <select name="SaleDetails[0].ProductId" class="form-select product-select">
                         <option value="">-- Select Product --</option>
-                        @foreach (var product in ViewBag.Products)
+                        @if (ViewBag.Products?.Items != null)
                         {
-                            <option value="@product.ProductId" data-price="@product.UnitPrice">@product.Name</option>
+                            foreach (var product in ViewBag.Products.Items)
+                            {
+                                <option value="@product.ProductId" data-price="@product.UnitPrice">@product.Name</option>
+                            }
                         }
                     </select>
                 </td>
@@ -48,6 +51,7 @@
                     <button type="button" class="btn btn-danger btn-sm remove-row">×</button>
                 </td>
             </tr>
+
         </tbody>
     </table>
 

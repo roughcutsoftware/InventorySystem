@@ -10,6 +10,7 @@ namespace InventorySystem.Core.Interfaces.Repositories
     public interface IProductRepository : IRepository<Product>
     {
         List<Product> GetAllWithCategoryAndSupplier();
-
+        List<Product> GetAllWithCategoryAndSupplier(int size, int pageNumber);
+        int GetTotalCount();
     }
 }

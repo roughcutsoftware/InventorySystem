@@ -34,7 +34,12 @@ namespace InventorySystem.Infrastructure.Repositories
             }
         }
 
-         List<Category> IRepository<Category>.GetAll(int size, int pageNumber, string includes)
+        public int GetTotalCount()
+        {
+            return _context.Categories.Count();
+        }
+
+        List<Category> IRepository<Category>.GetAll(int size, int pageNumber, string includes)
         {
             IQueryable<Category>categories = _context.Categories;
             if (!String.IsNullOrEmpty(includes))
@@ -70,7 +75,7 @@ namespace InventorySystem.Infrastructure.Repositories
         void IRepository<Category>.Update(Category obj)
         {
             var existingCategory = _context.Categories
-       .FirstOrDefault(s => s.CategoryId == obj.CategoryId);
+                .FirstOrDefault(s => s.CategoryId == obj.CategoryId);
 
             if (existingCategory != null)
             {

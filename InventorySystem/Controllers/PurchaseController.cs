@@ -29,21 +29,29 @@ namespace InventorySystem.Web.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int page = 1, int size = 20)
+        public IActionResult Index(int size = 3, int pageNumber = 1)
         {
             try
             {
-                var purchases = _purchaseService.GetAllPurchases(size, page)
-                    .Select(p => new PurchaseOrderDto
-                    {
-                        PurchaseId = p.PurchaseId,
-                        PurchaseDate = p.PurchaseDate,
-                        Status = p.Status,
-                        TotalAmount = p.TotalAmount
-                    }).ToList();
+                var purchases = _purchaseService.GetAllPurchases(size, pageNumber);
+                var dto = new PaginationDto<PurchaseOrderDto>
+                {
+                    PageNumber = purchases.PageNumber,
+                    PageSize = purchases.PageSize,
+                    TotalCount = purchases.TotalCount,
+                    Items = purchases.Items
+                       .Select(p => new PurchaseOrderDto
+                       {
+                           PurchaseId = p.PurchaseId,
+                           PurchaseDate = p.PurchaseDate,
+                           Status = p.Status,
+                           TotalAmount = p.TotalAmount
+                       })
+                      .ToList()
+                };
 
-                _logger.LogInformation("Fetched {count} purchases for page {page}", purchases.Count, page);
-                return View(purchases);
+                _logger.LogInformation("Fetched {count} purchases for page {page}", purchases.TotalCount, pageNumber);
+                return View(dto);
             }
             catch (Exception ex)
             {
@@ -67,8 +75,8 @@ namespace InventorySystem.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Suppliers = new SelectList(_supplierService.GetAllSuppliers(), "SupplierId", "Name");
-            ViewBag.Products = _productService.GetAllProducts();
+            ViewBag.Suppliers = new SelectList(_supplierService.GetAllSuppliers().Items, "SupplierId", "Name");
+            ViewBag.Products = _productService.GetAllProducts().Items;
             return View(new PurchaseOrderDto());
         }
 
@@ -78,8 +86,8 @@ namespace InventorySystem.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Suppliers = _supplierService.GetAllSuppliers();
-                ViewBag.Products = _productService.GetAllProducts();
+                ViewBag.Suppliers = _supplierService.GetAllSuppliers().Items;
+                ViewBag.Products = _productService.GetAllProducts().Items;
                 return View(dto);
             }
 
@@ -96,8 +104,8 @@ namespace InventorySystem.Web.Controllers
             {
                 _logger.LogError(ex, "Error creating purchase order.");
                 TempData["Error"] = "Failed to create purchase order.";
-                ViewBag.Suppliers = _supplierService.GetAllSuppliers();
-                ViewBag.Products = _productService.GetAllProducts();
+                ViewBag.Suppliers = _supplierService.GetAllSuppliers().Items;
+                ViewBag.Products = _productService.GetAllProducts().Items;
                 return View(dto);
             }
         }

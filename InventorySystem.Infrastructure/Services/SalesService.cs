@@ -3,6 +3,7 @@ using InventorySystem.Core.DTOs;
 using InventorySystem.Core.Entities;
 using InventorySystem.Core.Interfaces.Repositories;
 using InventorySystem.Core.Interfaces.Services;
+using InventorySystem.Infrastructure.Repositories;
 
 namespace InventorySystem.Infrastructure.Services
 {
@@ -65,10 +66,25 @@ namespace InventorySystem.Infrastructure.Services
             _salesRepository.SaveChanges();
             _productRepository.SaveChanges();
         }
-        public IEnumerable<Sales> GetAllSales(int size = 20, int pageNumber = 1)
+        //public IEnumerable<Sales> GetAllSales(int size = 20, int pageNumber = 1)
+        //{
+        //    return _salesRepository.GetAll(size, pageNumber).OrderByDescending(p=>p.SaleDate);
+        //}
+
+        public PaginationDto<Sales> GetAllSales(int size = 20, int pageNumber = 1)
         {
-            return _salesRepository.GetAll(size, pageNumber).OrderByDescending(p=>p.SaleDate);
+            var sales = _salesRepository.GetAll(size, pageNumber);
+            var totalCount = _salesRepository.GetTotalCount();
+
+            return new PaginationDto<Sales>
+            {
+                Items = _mapper.Map<List<Sales>>(sales),
+                PageNumber = pageNumber,
+                PageSize = size,
+                TotalCount = totalCount
+            };
         }
+
         public SalesDto? GetSalesById(int id)
         {
             var sale = _salesRepository.GetByID(id, "SaleDetails");

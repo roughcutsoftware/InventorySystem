@@ -64,14 +64,14 @@
                         <span asp-validation-for="Product.ReorderLevel" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-6">
+                    @* <div class="col-md-6">
                         <label asp-for="Product.IsActive" class="form-label fw-semibold">Status</label>
                         <select asp-for="Product.IsActive" class="form-select">
                             <option value="true">Active</option>
                             <option value="false">Inactive</option>
                         </select>
                         <span asp-validation-for="Product.IsActive" class="text-danger small"></span>
-                    </div>
+                    </div> *@
 
                     <div class="col-md-6">
                         <label asp-for="Product.CategoryId" class="form-label fw-semibold">Category *</label>
@@ -92,9 +92,17 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Created Date</label>
+                        <label class="form-label fw-semibold">Creation Date</label>
                         <input asp-for="Product.CreatedAt" class="form-control" readonly />
                         <small class="text-muted">This field cannot be modified</small>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check form-switch">
+                            <input asp-for="Product.IsActive" class="form-check-input" role="switch">
+                            <label asp-for="Product.IsActive" class="form-check-label fw-semibold">Active Product</label>
+                        </div>
+                        <span asp-validation-for="Product.IsActive" class="text-danger small"></span>
                     </div>
                 </div>
 

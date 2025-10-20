@@ -42,10 +42,24 @@ namespace InventorySystem.Infrastructure.Services
                 $"Customer {id} Deleted.");
         }
 
-        public List<CustomerDto> GetAllCustomers(int size = 20, int pageNumber = 1)
+        //public List<CustomerDto> GetAllCustomers(int size = 20, int pageNumber = 1)
+        //{
+        //    var cstm = cstmRepo.GetAll(size, pageNumber);
+        //    return mapper.Map<List<CustomerDto>>(cstm);
+        //}
+
+        public PaginationDto<CustomerDto> GetAllCustomers(int size = 20, int pageNumber = 1)
         {
-            var cstm = cstmRepo.GetAll(size, pageNumber);
-            return mapper.Map<List<CustomerDto>>(cstm);
+            var customers = cstmRepo.GetAll(size, pageNumber);
+            var totalCount = cstmRepo.GetTotalCount();
+
+            return new PaginationDto<CustomerDto>
+            {
+                Items = mapper.Map<List<CustomerDto>>(customers),
+                PageNumber = pageNumber,
+                PageSize = size,
+                TotalCount = totalCount
+            };
         }
 
         public CustomerDto? GetCustomerById(int id)

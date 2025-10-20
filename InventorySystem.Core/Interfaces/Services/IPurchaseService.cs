@@ -7,7 +7,7 @@ namespace InventorySystem.Core.Interfaces.Services
     {
         void CreatePurchaseOrder(PurchaseOrderDto dto);
 
-        IEnumerable<Purchase> GetAllPurchases(int size, int pageNumber);
+        PaginationDto<Purchase> GetAllPurchases(int size, int pageNumber);
 
         PurchaseOrderDto? GetPurchaseById(int id);
 
