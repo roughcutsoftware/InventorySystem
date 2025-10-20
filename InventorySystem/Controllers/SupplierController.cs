@@ -16,7 +16,7 @@ namespace InventorySystem.Web.Controllers
             _supplierService = supplierService;
         }
 
-        public IActionResult Index(int size = 3, int pageNumber = 1)
+        public IActionResult Index(int size = 5, int pageNumber = 1)
         {
             var suppliers = _supplierService.GetAllSuppliers(size, pageNumber);
             return View(suppliers);

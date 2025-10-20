@@ -29,7 +29,7 @@ namespace InventorySystem.Web.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int size = 3, int pageNumber = 1)
+        public IActionResult Index(int size = 5, int pageNumber = 1)
         {
             try
             {

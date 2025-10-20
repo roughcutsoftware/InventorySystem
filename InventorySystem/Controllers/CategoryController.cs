@@ -10,24 +10,45 @@ namespace InventorySystem.web.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
+        private readonly IProductService _productService;
+        public CategoryController(ICategoryService categoryService, IProductService productService)
         {
             _categoryService = categoryService;
+            _productService = productService;
         }
 
 
-        public IActionResult Index(int size = 3, int pageNumber = 1)
+        public IActionResult Index(int size = 5, int pageNumber = 1)
         {
             var categories = _categoryService.GetAllCategories(size, pageNumber);
             return View(categories);
         }
 
-        public IActionResult Details(int id )
+        //public IActionResult Details(int id )
+        //{
+        //    var categories = _categoryService.GetCategoryById(id);
+        //    if(categories == null) return NotFound();
+        //    return View(categories);
+        //}
+
+        public IActionResult Details(int id)
         {
-            var categories = _categoryService.GetCategoryById(id);
-            if(categories == null) return NotFound();
-            return View(categories);
+            var category = _categoryService.GetCategoryById(id);
+            if (category == null) return NotFound();
+
+            // Get products under this category
+            var products = _productService.GetProductsByCategoryId(id);
+
+            // Combine category and product info
+            var vm = new Category_Details_ViewModel
+            {
+                Category = category,
+                Products = products.ToList()
+            };
+
+            return View(vm);
         }
+
         [HttpGet]
         public IActionResult Add() { return View(); }
 

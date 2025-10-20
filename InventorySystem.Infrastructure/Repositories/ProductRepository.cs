@@ -103,6 +103,14 @@ namespace InventorySystem.Infrastructure.Repositories
             }
         }
 
+        public IEnumerable<Product> GetProductsByCategoryId(int categoryId)
+        {
+            return context.Products
+                .Where(p => p.CategoryId == categoryId)
+                .AsNoTracking()
+                .ToList();
+        }
+
         public void SaveChanges()
         {
             context.SaveChanges();

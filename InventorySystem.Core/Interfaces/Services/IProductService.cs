@@ -9,6 +9,7 @@ namespace InventorySystem.Core.Interfaces.Services
         void AddProduct(ProductDto dto);
         void UpdateProduct(ProductDto dto);
         void DeleteProduct(int id);
+        IEnumerable<ProductDto> GetProductsByCategoryId(int categoryId);
 
     }
 }

@@ -1,5 +1,11 @@
 ﻿@model InventorySystem.Core.DTOs.PaginationDto<InventorySystem.Core.DTOs.PurchaseOrderDto>
 
+@{
+    ViewData["Title"] = "Purchase Orders";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold text-primary"><i class="bi bi-cart4 me-2"></i>Purchases</h2>
@@ -64,19 +70,27 @@
 
                                         @if (p.Status?.ToLower() == "pending")
                                         {
-                                            <form asp-action="Receive" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Mark as Received"
-                                                        onclick="return confirm('Mark this purchase as received?');">
-                                                    <i class="bi bi-box-seam"></i>
-                                                </button>
-                                            </form>
+                                            <!-- Receive Button -->
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-success me-1 action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-action="receive"
+                                                    data-id="@p.PurchaseId"
+                                                    data-message="Mark this purchase as received?">
+                                                <i class="bi bi-box-seam"></i>
+                                            </button>
 
-                                            <form asp-action="Cancel" asp-route-id="@p.PurchaseId" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel Purchase"
-                                                        onclick="return confirm('Cancel this purchase?');">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </form>
+                                            <!-- Cancel Button -->
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-action="cancel"
+                                                    data-id="@p.PurchaseId"
+                                                    data-message="Cancel this purchase?">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
                                         }
                                     </div>
                                 </td>
@@ -127,7 +141,73 @@
     </div>
 </div>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-3">
+            <div class="modal-header d-flex align-items-center">
+                <i id="confirmModalIcon" class="bi me-2 fs-4"></i>
+                <h5 class="modal-title mb-0" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="confirmModalMessage">Are you sure?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">No, Go Back</button>
+                <button type="button" class="btn" id="confirmModalYes">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmLabel = document.getElementById('confirmModalLabel');
+            const confirmMessage = document.getElementById('confirmModalMessage');
+            const confirmIcon = document.getElementById('confirmModalIcon');
+            const confirmYes = document.getElementById('confirmModalYes');
+            let currentAction = null;
+            let currentId = null;
+
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentAction = btn.dataset.action;
+                    currentId = btn.dataset.id;
+                    const message = btn.dataset.message;
+
+                    confirmMessage.textContent = message;
+
+                    if (currentAction === 'receive') {
+                        confirmLabel.textContent = "Confirm Receipt";
+                        confirmIcon.className = "bi bi-box-seam-fill text-success me-2 fs-4";
+                        confirmYes.className = "btn btn-success";
+                        confirmYes.textContent = "Yes, Mark as Received";
+                    } else if (currentAction === 'cancel') {
+                        confirmLabel.textContent = "Confirm Cancellation";
+                        confirmIcon.className = "bi bi-x-circle-fill text-danger me-2 fs-4";
+                        confirmYes.className = "btn btn-danger";
+                        confirmYes.textContent = "Yes, Cancel It";
+                    }
+                });
+            });
+
+            confirmYes.addEventListener('click', function () {
+                if (!currentAction || !currentId) return;
+
+                const modal = bootstrap.Modal.getInstance(confirmModal);
+                modal.hide();
+
+                fetch(`/Purchases/${currentAction}/${currentId}`, { method: "POST" })
+                    .then(res => {
+                        if (res.ok) location.reload();
+                        else alert("Action failed. Please try again.");
+                    })
+                    .catch(() => alert("An error occurred."));
+            });
+        });
+    </script>
+}
 
 <style>
     .table th {
@@ -152,5 +232,14 @@
         border-color: #0d6efd;
         color: #fff !important;
         font-weight: bold;
+    }
+
+    #confirmModal .modal-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    #confirmModal .modal-footer {
+        border-top: none;
     }
 </style>

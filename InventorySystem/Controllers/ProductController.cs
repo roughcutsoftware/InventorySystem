@@ -24,7 +24,7 @@ namespace InventorySystem.web.Controllers
             this.supplierService = supplierService;
         }
 
-        public IActionResult Index(int size = 3, int pageNumber = 1)
+        public IActionResult Index(int size = 8, int pageNumber = 1)
         {
             var products = productService.GetAllProducts(size, pageNumber);
             return View(products);

@@ -71,19 +71,25 @@
 
                                         @if (sale.Status?.ToLower() == "pending")
                                         {
-                                            <form asp-action="Complete" asp-route-id="@sale.SaleId" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Mark as Completed"
-                                                        onclick="return confirm('Mark this sale as completed?');">
-                                                    <i class="bi bi-check2-circle"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-success me-1 action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-action="complete"
+                                                    data-id="@sale.SaleId"
+                                                    data-message="Mark this sale as completed?">
+                                                <i class="bi bi-check2-circle"></i>
+                                            </button>
 
-                                            <form asp-action="Cancel" asp-route-id="@sale.SaleId" method="post" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel Sale"
-                                                        onclick="return confirm('Cancel this sale?');">
-                                                    <i class="bi bi-x-circle"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-action="cancel"
+                                                    data-id="@sale.SaleId"
+                                                    data-message="Cancel this sale?">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
                                         }
                                     </div>
                                 </td>
@@ -134,6 +140,76 @@
     </div>
 </div>
 
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-3">
+            <div class="modal-header d-flex align-items-center">
+                <i id="confirmModalIcon" class="bi me-2 fs-4"></i>
+                <h5 class="modal-title mb-0" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="confirmModalMessage">Are you sure?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">No, Go Back</button>
+                <button type="button" class="btn" id="confirmModalYes">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmLabel = document.getElementById('confirmModalLabel');
+            const confirmMessage = document.getElementById('confirmModalMessage');
+            const confirmIcon = document.getElementById('confirmModalIcon');
+            const confirmYes = document.getElementById('confirmModalYes');
+            let currentAction = null;
+            let currentId = null;
+
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentAction = btn.dataset.action;
+                    currentId = btn.dataset.id;
+                    const message = btn.dataset.message;
+
+                    confirmMessage.textContent = message;
+
+                    if (currentAction === 'complete') {
+                        confirmLabel.textContent = "Confirm Completion";
+                        confirmIcon.className = "bi bi-check-circle-fill text-success me-2 fs-4";
+                        confirmYes.className = "btn btn-success";
+                        confirmYes.textContent = "Yes, Complete";
+                    } else if (currentAction === 'cancel') {
+                        confirmLabel.textContent = "Confirm Cancellation";
+                        confirmIcon.className = "bi bi-x-circle-fill text-danger me-2 fs-4";
+                        confirmYes.className = "btn btn-danger";
+                        confirmYes.textContent = "Yes, Cancel";
+                    }
+                });
+            });
+
+            confirmYes.addEventListener('click', function () {
+                if (!currentAction || !currentId) return;
+
+                const modal = bootstrap.Modal.getInstance(confirmModal);
+                modal.hide();
+
+                fetch(`/Sales/${currentAction}/${currentId}`, { method: "POST" })
+                    .then(res => {
+                        if (res.ok) {
+                            location.reload();
+                        } else {
+                            alert("Action failed. Please try again.");
+                        }
+                    })
+                    .catch(() => alert("An error occurred."));
+            });
+        });
+    </script>
+}
+
 <style>
     .table th {
         white-space: nowrap;
@@ -157,5 +233,14 @@
         border-color: #0d6efd;
         color: #fff !important;
         font-weight: bold;
+    }
+
+    #confirmModal .modal-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    #confirmModal .modal-footer {
+        border-top: none;
     }
 </style>
