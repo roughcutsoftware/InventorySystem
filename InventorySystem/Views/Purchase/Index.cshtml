@@ -70,7 +70,6 @@
 
                                         @if (p.Status?.ToLower() == "pending")
                                         {
-                                            <!-- Receive Button -->
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-success me-1 action-btn"
                                                     data-bs-toggle="modal"
@@ -81,7 +80,6 @@
                                                 <i class="bi bi-box-seam"></i>
                                             </button>
 
-                                            <!-- Cancel Button -->
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger action-btn"
                                                     data-bs-toggle="modal"
@@ -141,11 +139,13 @@
     </div>
 </div>
 
+@Html.AntiForgeryToken()
+
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-3">
-            <div class="modal-header d-flex align-items-center">
+            <div id="confirmModalHeader" class="modal-header d-flex align-items-center">
                 <i id="confirmModalIcon" class="bi me-2 fs-4"></i>
                 <h5 class="modal-title mb-0" id="confirmModalLabel">Confirm Action</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -167,6 +167,7 @@
             const confirmMessage = document.getElementById('confirmModalMessage');
             const confirmIcon = document.getElementById('confirmModalIcon');
             const confirmYes = document.getElementById('confirmModalYes');
+            const modalHeader = document.getElementById('confirmModalHeader');
             let currentAction = null;
             let currentId = null;
 
@@ -183,28 +184,42 @@
                         confirmIcon.className = "bi bi-box-seam-fill text-success me-2 fs-4";
                         confirmYes.className = "btn btn-success";
                         confirmYes.textContent = "Yes, Mark as Received";
+                        modalHeader.style.color = "#28a745";
                     } else if (currentAction === 'cancel') {
                         confirmLabel.textContent = "Confirm Cancellation";
                         confirmIcon.className = "bi bi-x-circle-fill text-danger me-2 fs-4";
                         confirmYes.className = "btn btn-danger";
                         confirmYes.textContent = "Yes, Cancel It";
+                        modalHeader.style.color = "#dc3545"; 
                     }
                 });
             });
 
-            confirmYes.addEventListener('click', function () {
-                if (!currentAction || !currentId) return;
+                    confirmYes.addEventListener('click', function () {
+            if (!currentAction || !currentId) return;
 
-                const modal = bootstrap.Modal.getInstance(confirmModal);
-                modal.hide();
+            const modal = bootstrap.Modal.getInstance(confirmModal);
+            modal.hide();
 
-                fetch(`/Purchases/${currentAction}/${currentId}`, { method: "POST" })
-                    .then(res => {
-                        if (res.ok) location.reload();
-                        else alert("Action failed. Please try again.");
-                    })
-                    .catch(() => alert("An error occurred."));
-            });
+            // ✅ FIX 1: use correct controller route name (Purchase, not Purchases)
+            const fixedUrl = `/Purchase/${currentAction}?id=${currentId}`;
+
+            // ✅ FIX 2: include antiforgery token
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+            fetch(fixedUrl, {
+                method: "POST",
+                headers: {
+                    "RequestVerificationToken": token || ""
+                }
+            })
+                .then(res => {
+                    if (res.ok) location.reload();
+                    else alert("Action failed. Please try again.");
+                })
+                .catch(() => alert("An error occurred."));
+        });
+
         });
     </script>
 }

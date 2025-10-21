@@ -140,10 +140,12 @@
     </div>
 </div>
 
+@Html.AntiForgeryToken()
+
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-3">
-            <div class="modal-header d-flex align-items-center">
+            <div id="confirmModalHeader" class="modal-header d-flex align-items-center">
                 <i id="confirmModalIcon" class="bi me-2 fs-4"></i>
                 <h5 class="modal-title mb-0" id="confirmModalLabel">Confirm Action</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -158,6 +160,8 @@
 </div>
 
 @section Scripts {
+    @Html.AntiForgeryToken()  <!-- ✅ Generates antiforgery token -->
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const confirmModal = document.getElementById('confirmModal');
@@ -165,9 +169,12 @@
             const confirmMessage = document.getElementById('confirmModalMessage');
             const confirmIcon = document.getElementById('confirmModalIcon');
             const confirmYes = document.getElementById('confirmModalYes');
+            const modalHeader = document.getElementById('confirmModalHeader');
+
             let currentAction = null;
             let currentId = null;
 
+            // Handle opening modal buttons
             document.querySelectorAll('.action-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     currentAction = btn.dataset.action;
@@ -181,30 +188,55 @@
                         confirmIcon.className = "bi bi-check-circle-fill text-success me-2 fs-4";
                         confirmYes.className = "btn btn-success";
                         confirmYes.textContent = "Yes, Complete";
+                        modalHeader.style.color = "#28a745";
                     } else if (currentAction === 'cancel') {
                         confirmLabel.textContent = "Confirm Cancellation";
                         confirmIcon.className = "bi bi-x-circle-fill text-danger me-2 fs-4";
                         confirmYes.className = "btn btn-danger";
                         confirmYes.textContent = "Yes, Cancel";
+                        modalHeader.style.color = "#dc3545";
                     }
                 });
             });
 
+            // Handle confirmation button click
             confirmYes.addEventListener('click', function () {
                 if (!currentAction || !currentId) return;
 
                 const modal = bootstrap.Modal.getInstance(confirmModal);
                 modal.hide();
 
-                fetch(`/Sales/${currentAction}/${currentId}`, { method: "POST" })
-                    .then(res => {
+                // ✅ Construct the correct URL for the SalesController
+                const fixedUrl = `/Sales/${currentAction}?id=${currentId}`;
+
+                // ✅ Get the antiforgery token that Razor rendered
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+                // ✅ Send POST request with token in body (required by ASP.NET)
+                fetch(fixedUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        "__RequestVerificationToken": token || ""
+                    })
+                })
+                    .then(async res => {
+                        const text = await res.text();
+                        console.log("Response:", res.status, text);
+
                         if (res.ok) {
+                            // ✅ Refresh page after success
                             location.reload();
                         } else {
-                            alert("Action failed. Please try again.");
+                            alert(`Action failed (status ${res.status}).`);
                         }
                     })
-                    .catch(() => alert("An error occurred."));
+                    .catch(err => {
+                        console.error("Fetch error:", err);
+                        alert("An error occurred while performing the action.");
+                    });
             });
         });
     </script>

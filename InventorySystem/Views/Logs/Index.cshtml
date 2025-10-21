@@ -19,7 +19,7 @@
 
             <!-- Clear Logs Modal -->
             <div class="modal fade" id="clearLogsModal" tabindex="-1">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title text-danger">
@@ -48,7 +48,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -170,5 +169,13 @@
         border-color: #0d6efd;
         color: #fff !important;
         font-weight: bold;
+    }
+    .modal.fade .modal-dialog {
+        transition: transform 0.3s ease-out;
+        transform: translateY(-20%);
+    }
+
+    .modal.fade.show .modal-dialog {
+        transform: translateY(0);
     }
 </style>
