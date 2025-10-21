@@ -8,20 +8,7 @@ namespace InventorySystem.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<IdentityRole> builder)
         {
-            //builder.HasData(
-            //    new IdentityRole
-            //    {
-            //        Id = "R1",
-            //        Name = "Admin",
-            //        NormalizedName = "ADMIN"
-            //    },
-            //    new IdentityRole
-            //    {
-            //        Id = "R2",
-            //        Name = "User",
-            //        NormalizedName = "USER"
-            //    }
-            //);
+
         }
     }
 }

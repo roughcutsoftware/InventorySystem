@@ -18,8 +18,8 @@ namespace InventorySystem.Core.Entities
         public DateTime CreatedAt { get; set; } 
 
 
-        public int CategoryId { get; set; }
-        public int SupplierId { get; set; }
+        public int? CategoryId { get; set; }
+        public int? SupplierId { get; set; }
 
 
         public Category Category { get; set; } = null!;

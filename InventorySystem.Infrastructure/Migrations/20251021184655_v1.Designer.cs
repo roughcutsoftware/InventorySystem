@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventorySystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20251021081713_init")]
-    partial class init
+    [Migration("20251021184655_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,7 +155,7 @@ namespace InventorySystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("CostPrice")
@@ -178,7 +178,7 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.Property<int?>("ReorderLevel")
                         .HasColumnType("int");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("UnitPrice")
@@ -211,7 +211,7 @@ namespace InventorySystem.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")
@@ -234,10 +234,10 @@ namespace InventorySystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PurchaseDetailId"));
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PurchaseId")
+                    b.Property<int?>("PurchaseId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -266,13 +266,13 @@ namespace InventorySystem.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleDetailId"));
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("SaleId")
+                    b.Property<int?>("SaleId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Subtotal")
@@ -301,7 +301,7 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SaleDate")
@@ -356,7 +356,8 @@ namespace InventorySystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("SupplierId");
 
@@ -529,14 +530,12 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.HasOne("InventorySystem.Core.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("InventorySystem.Core.Entities.Supplier", "Supplier")
                         .WithMany("Products")
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
 
@@ -548,13 +547,12 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.HasOne("InventorySystem.Core.Entities.ApplicationUser", "CreatedBy")
                         .WithMany("Purchases")
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("InventorySystem.Core.Entities.Supplier", "Supplier")
                         .WithMany("Purchases")
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("CreatedBy");
 
@@ -566,14 +564,12 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.HasOne("InventorySystem.Core.Entities.Product", "Product")
                         .WithMany("PurchaseDetails")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("InventorySystem.Core.Entities.Purchase", "Purchase")
                         .WithMany("PurchaseDetails")
                         .HasForeignKey("PurchaseId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Product");
 
@@ -585,14 +581,12 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.HasOne("InventorySystem.Core.Entities.Product", "Product")
                         .WithMany("SaleDetails")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("InventorySystem.Core.Entities.Sales", "Sales")
                         .WithMany("SaleDetails")
                         .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Product");
 
@@ -604,13 +598,12 @@ namespace InventorySystem.Infrastructure.Migrations
                     b.HasOne("InventorySystem.Core.Entities.ApplicationUser", "User")
                         .WithMany("Sales")
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("InventorySystem.Core.Entities.Customer", "Customer")
                         .WithMany("Sales")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Customer");
 

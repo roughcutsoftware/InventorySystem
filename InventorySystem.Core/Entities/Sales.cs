@@ -8,7 +8,7 @@
         public string? Status { get; set; }
 
         //fk's
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         public string? CreatedBy { get; set; } // UserId
 
         public Customer? Customer { get; set; }

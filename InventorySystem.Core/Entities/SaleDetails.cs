@@ -8,8 +8,8 @@
         public decimal Subtotal { get; set; }
 
 
-        public int ProductId { get; set; }
-        public int SaleId { get; set; }
+        public int? ProductId { get; set; }
+        public int? SaleId { get; set; }
 
 
         public Product Product { get; set; } = null!;

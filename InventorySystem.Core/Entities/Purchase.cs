@@ -11,7 +11,7 @@ namespace InventorySystem.Core.Entities
         public string? Status { get; set; } 
 
         public string? CreatedById { get; set; }
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         public ApplicationUser? CreatedBy { get; set; }
         public Supplier Supplier { get; set; } = null!;

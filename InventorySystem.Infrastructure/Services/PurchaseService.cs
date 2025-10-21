@@ -113,7 +113,7 @@ namespace InventorySystem.Infrastructure.Services
 
             foreach (var detail in purchase.PurchaseDetails)
             {
-                var product = _productRepository.GetByID(detail.ProductId);
+                var product = _productRepository.GetByID(detail.ProductId.Value);
                 if (product != null)
                 {
                     product.QuantityInStock += detail.Quantity;

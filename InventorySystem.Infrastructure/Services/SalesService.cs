@@ -32,7 +32,7 @@ namespace InventorySystem.Infrastructure.Services
 
             foreach (var detailDto in dto.SaleDetails)
             {
-                var product = _productRepository.GetByID(detailDto.ProductId);
+                var product = _productRepository.GetByID(detailDto.ProductId.Value);
                 if (product == null)
                     throw new InvalidOperationException($"Product with ID {detailDto.ProductId} not found.");
 
@@ -101,7 +101,7 @@ namespace InventorySystem.Infrastructure.Services
 
             foreach (var detail in sale.SaleDetails)
             {
-                var product = _productRepository.GetByID(detail.ProductId);
+                var product = _productRepository.GetByID(detail.ProductId.Value);
                 if (product != null)
                 {
                     product.QuantityInStock += detail.Quantity;
