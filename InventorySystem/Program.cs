@@ -106,15 +106,15 @@ app.MapControllerRoute(
     pattern: "{controller=Account}/{action=Login}")
     .WithStaticAssets();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context1 = services.GetRequiredService<AppDBContext>();
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    await DbSeeder.InitializeAsync(context1, userManager, roleManager, logger);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var context1 = services.GetRequiredService<AppDBContext>();
+//    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+//    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+//    var logger = services.GetRequiredService<ILogger<Program>>();
+//    await DbSeeder.InitializeAsync(context1, userManager, roleManager, logger);
+//}
 
 
 app.Run();
