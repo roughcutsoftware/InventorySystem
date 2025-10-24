@@ -235,12 +235,3 @@ dotnet run --project InventorySystem
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-- Author: Ahmed Abdelaty
-- GitHub: [A7medabdelaty](https://github.com/A7medabdelaty)
-- Project Link: [https://github.com/A7medabdelaty/InventorySystem](https://github.com/A7medabdelaty/InventorySystem)
-
----
-
-**Note**: Replace placeholder URLs, credentials, and images with actual content before deployment. Add any specific deployment instructions or environment variables required for your hosting platform.
