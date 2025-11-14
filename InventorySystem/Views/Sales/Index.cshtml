@@ -1,0 +1,278 @@
+﻿@model InventorySystem.Core.DTOs.PaginationDto<InventorySystem.Core.DTOs.SalesDto>
+
+@{
+    ViewData["Title"] = "Sales Orders";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-receipt-cutoff me-2"></i>Sales Orders
+        </h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> New Sale
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col" class="text-end">Total</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items != null && Model.Items.Any())
+                    {
+                        @foreach (var sale in Model.Items)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@sale.SaleId</td>
+                                <td>@sale.SaleDate.ToString("yyyy-MM-dd")</td>
+                                <td>@(sale.CustomerName ?? "-")</td>
+                                <td class="text-end">@sale.TotalAmount.ToString("C")</td>
+                                <td class="text-center">
+                                    @switch (sale.Status?.ToLower())
+                                    {
+                                        case "pending":
+                                            <span class="badge bg-warning text-dark px-3 py-2">
+                                                <i class="bi bi-hourglass-split me-1"></i> Pending
+                                            </span>
+                                            break;
+                                        case "completed":
+                                            <span class="badge bg-success px-3 py-2">
+                                                <i class="bi bi-check-circle me-1"></i> Completed
+                                            </span>
+                                            break;
+                                        case "cancelled":
+                                            <span class="badge bg-danger px-3 py-2">
+                                                <i class="bi bi-x-circle me-1"></i> Cancelled
+                                            </span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary px-3 py-2">@sale.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@sale.SaleId"
+                                           class="btn btn-sm btn-outline-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        @if (sale.Status?.ToLower() == "pending")
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-success me-1 action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-action="complete"
+                                                    data-id="@sale.SaleId"
+                                                    data-message="Mark this sale as completed?">
+                                                <i class="bi bi-check2-circle"></i>
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    data-action="cancel"
+                                                    data-id="@sale.SaleId"
+                                                    data-message="Cancel this sale?">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-3">
+                                <i class="bi bi-info-circle me-1"></i> No sales found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+        <p class="mb-0 text-muted">
+            Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong>
+            — Total items: <strong>@Model.TotalCount</strong>
+        </p>
+
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-size="@Model.PageSize">
+                        Previous
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-size="@Model.PageSize">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-size="@Model.PageSize">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-3">
+            <div id="confirmModalHeader" class="modal-header d-flex align-items-center">
+                <i id="confirmModalIcon" class="bi me-2 fs-4"></i>
+                <h5 class="modal-title mb-0" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="confirmModalMessage">Are you sure?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">No, Go Back</button>
+                <button type="button" class="btn" id="confirmModalYes">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Html.AntiForgeryToken()  <!-- ✅ Generates antiforgery token -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmLabel = document.getElementById('confirmModalLabel');
+            const confirmMessage = document.getElementById('confirmModalMessage');
+            const confirmIcon = document.getElementById('confirmModalIcon');
+            const confirmYes = document.getElementById('confirmModalYes');
+            const modalHeader = document.getElementById('confirmModalHeader');
+
+            let currentAction = null;
+            let currentId = null;
+
+            // Handle opening modal buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentAction = btn.dataset.action;
+                    currentId = btn.dataset.id;
+                    const message = btn.dataset.message;
+
+                    confirmMessage.textContent = message;
+
+                    if (currentAction === 'complete') {
+                        confirmLabel.textContent = "Confirm Completion";
+                        confirmIcon.className = "bi bi-check-circle-fill text-success me-2 fs-4";
+                        confirmYes.className = "btn btn-success";
+                        confirmYes.textContent = "Yes, Complete";
+                        modalHeader.style.color = "#28a745";
+                    } else if (currentAction === 'cancel') {
+                        confirmLabel.textContent = "Confirm Cancellation";
+                        confirmIcon.className = "bi bi-x-circle-fill text-danger me-2 fs-4";
+                        confirmYes.className = "btn btn-danger";
+                        confirmYes.textContent = "Yes, Cancel";
+                        modalHeader.style.color = "#dc3545";
+                    }
+                });
+            });
+
+            // Handle confirmation button click
+            confirmYes.addEventListener('click', function () {
+                if (!currentAction || !currentId) return;
+
+                const modal = bootstrap.Modal.getInstance(confirmModal);
+                modal.hide();
+
+                // ✅ Construct the correct URL for the SalesController
+                const fixedUrl = `/Sales/${currentAction}?id=${currentId}`;
+
+                // ✅ Get the antiforgery token that Razor rendered
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+                // ✅ Send POST request with token in body (required by ASP.NET)
+                fetch(fixedUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        "__RequestVerificationToken": token || ""
+                    })
+                })
+                    .then(async res => {
+                        const text = await res.text();
+                        console.log("Response:", res.status, text);
+
+                        if (res.ok) {
+                            // ✅ Refresh page after success
+                            location.reload();
+                        } else {
+                            alert(`Action failed (status ${res.status}).`);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Fetch error:", err);
+                        alert("An error occurred while performing the action.");
+                    });
+            });
+        });
+    </script>
+}
+
+<style>
+    .table th {
+        white-space: nowrap;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+    }
+
+    .btn-group .btn {
+        margin-right: 4px;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #0dcaf0;
+        color: white;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff !important;
+        font-weight: bold;
+    }
+
+    #confirmModal .modal-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    #confirmModal .modal-footer {
+        border-top: none;
+    }
+</style>

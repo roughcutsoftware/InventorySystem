@@ -1,0 +1,116 @@
+﻿@using InventorySystem.Core.DTOs
+@model InventorySystem.Web.View_Models.Product_ViewModel
+
+@{
+    ViewData["Title"] = "Add New Product";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add New Product
+        </h2>
+        <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-info-circle me-2"></i>Product Information
+            </h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="AddNewProduct" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Product.Name" class="form-label fw-semibold">Product Name *</label>
+                        <input asp-for="Product.Name" class="form-control" placeholder="Enter product name">
+                        <span asp-validation-for="Product.Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Product.QuantityInStock" class="form-label fw-semibold">Quantity in Stock *</label>
+                        <input asp-for="Product.QuantityInStock" class="form-control" placeholder="0">
+                        <span asp-validation-for="Product.QuantityInStock" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Product.UnitPrice" class="form-label fw-semibold">Unit Price *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Product.UnitPrice" class="form-control" placeholder="0.00">
+                        </div>
+                        <span asp-validation-for="Product.UnitPrice" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Product.CostPrice" class="form-label fw-semibold">Cost Price *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Product.CostPrice" class="form-control" placeholder="0.00">
+                        </div>
+                        <span asp-validation-for="Product.CostPrice" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Product.ReorderLevel" class="form-label fw-semibold">Reorder Level</label>
+                        <input asp-for="Product.ReorderLevel" class="form-control" placeholder="Optional">
+                        <span asp-validation-for="Product.ReorderLevel" class="text-danger small"></span>
+                    </div>
+
+                    @* <div class="col-md-6">
+                        <label asp-for="Product.IsActive" class="form-label fw-semibold">Status</label>
+                        <select asp-for="Product.IsActive" class="form-select">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                        <span asp-validation-for="Product.IsActive" class="text-danger small"></span>
+                    </div> *@
+
+                    <div class="col-md-6">
+                        <label asp-for="Product.CategoryId" class="form-label fw-semibold">Category *</label>
+                        <select asp-for="Product.CategoryId"
+                                class="form-select"
+                                asp-items="@(new SelectList(Model.Categories, nameof(CategoryDto.CategoryId), nameof(CategoryDto.Name)))">
+                            <option value="">-- Select Category --</option>
+                        </select>
+                        <span asp-validation-for="Product.CategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Product.SupplierId" class="form-label fw-semibold">Supplier *</label>
+                        <select asp-for="Product.SupplierId"
+                                class="form-select"
+                                asp-items="@(new SelectList(Model.Suppliers, nameof(SupplierDto.SupplierId), nameof(SupplierDto.Name)))">
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                        <span asp-validation-for="Product.SupplierId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-lg-center mt-5">
+                        <div class="form-check form-switch mb-0">
+                            <input asp-for="Product.IsActive" class="form-check-input" role="switch">
+                            <label asp-for="Product.IsActive" class="form-check-label fw-semibold ms-2 mb-0">Active Product</label>
+                        </div>
+                        <span asp-validation-for="Product.IsActive" class="text-danger small ms-3"></span>
+                    </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-check-circle me-1"></i>Create Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

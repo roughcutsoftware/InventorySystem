@@ -1,0 +1,106 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+
+        code {
+            background-color: #f8f9fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--primary-color);
+        }
+    </style>
+    <div class="row justify-content-center min-vh-100 align-items-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <!-- Error Icon -->
+                    <div class="mb-4">
+                        <i class="fas fa-exclamation-circle text-danger" style="font-size: 5rem;"></i>
+                    </div>
+
+                    <!-- Error Message -->
+                    <h1 class="display-4 mb-3">Oops!</h1>
+                    <h2 class="h4 text-muted mb-4">Something went wrong while processing your request</h2>
+
+                    <!-- Error Details (Only in Development) -->
+                    @if (Model.ShowRequestId)
+                    {
+                        <div class="alert alert-info d-inline-block mb-4">
+                            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                        </div>
+                    }
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Go Back
+                        </a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>Return Home
+                        </a>
+                    </div>
+
+                    @if (Model.ShowRequestId && Context.Request.Headers["X-Requested-With"] != "XMLHttpRequest")
+                    {
+                        <div class="mt-4">
+                            <div class="accordion" id="errorAccordion">
+                                <div class="accordion-item border-0">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed bg-light" type="button" 
+                                                data-bs-toggle="collapse" data-bs-target="#technicalDetails">
+                                            Technical Details
+                                        </button>
+                                    </h2>
+                                    <div id="technicalDetails" class="accordion-collapse collapse" 
+                                         data-bs-parent="#errorAccordion">
+                                        <div class="accordion-body text-start">
+                                            <div class="alert alert-light border mb-0">
+                                                <h6 class="fw-bold">Error Information:</h6>
+                                                <p class="mb-2">Time: @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                                                <p class="mb-2">Request ID: @Model.RequestId</p>
+                                                @if (!string.IsNullOrEmpty(Model.ExceptionMessage))
+                                                {
+                                                    <p class="mb-0">Message: @Model.ExceptionMessage</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="text-center mt-4 text-muted">
+                <p class="mb-2">Need help? Contact our support team</p>
+                <a href="mailto:support@inventorysystem.com" class="text-decoration-none">
+                    <i class="fas fa-envelope me-1"></i>support@inventorysystem.com
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+﻿using InventorySystem.Core.DTOs;
+using InventorySystem.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InventorySystem.Web.Controllers
+{
+    [AutoValidateAntiforgeryToken]
+    [Authorize(Roles = "Admin")]
+    public class SupplierController : Controller
+    {
+        private readonly ISupplierService _supplierService;
+
+        public SupplierController(ISupplierService supplierService)
+        {
+            _supplierService = supplierService;
+        }
+
+        public IActionResult Index(int size = 5, int pageNumber = 1)
+        {
+            var suppliers = _supplierService.GetAllSuppliers(size, pageNumber);
+            return View(suppliers);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var supplier = _supplierService.GetSupplierById(id);
+            if (supplier == null)
+                return NotFound();
+
+            return View(supplier);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(SupplierDto dto)
+        {
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            _supplierService.AddSupplier(dto);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var supplier = _supplierService.GetSupplierById(id);
+            if (supplier == null)
+                return NotFound();
+
+            return View(supplier);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(SupplierDto dto)
+        {
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            _supplierService.UpdateSupplier(dto);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var supplier = _supplierService.GetSupplierById(id);
+            if (supplier == null)
+                return NotFound();
+
+            return View(supplier);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int SupplierId)
+        {
+            _supplierService.DeleteSupplier(SupplierId);
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

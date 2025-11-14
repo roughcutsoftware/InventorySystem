@@ -1,0 +1,53 @@
+﻿@model InventorySystem.Core.DTOs.CategoryDto
+
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add Category
+        </h2>
+        <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Add" method="post">
+                @Html.AntiForgeryToken()
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold">Category Name *</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter category name">
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" 
+                                placeholder="Enter category description (optional)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary shadow-sm">
+                        <i class="bi bi-check-circle me-1"></i>Create Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
