@@ -1,0 +1,181 @@
+@model IEnumerable<InventorySystem.Core.Entities.SystemLog>
+@{
+    ViewData["Title"] = "System Logs";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">System Logs</h1>
+        <div>
+            <form asp-action="Export" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i>Export to CSV
+                </button>
+            </form>
+            <!-- Clear Logs Button -->
+            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+                <i class="fas fa-trash me-2"></i>Clear Logs
+            </button>
+
+            <!-- Clear Logs Modal -->
+            <div class="modal fade" id="clearLogsModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Clear System Logs
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-warning">
+                                <strong>Warning:</strong> This action cannot be undone.
+                            </div>
+                            <p>You are about to permanently delete all system log entries. This will:</p>
+                            <ul>
+                                <li>Remove all audit trail records</li>
+                                <li>Delete historical activity data</li>
+                                <li>Affect system debugging capabilities</li>
+                            </ul>
+                            <p class="text-muted small">Consider exporting logs before proceeding.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form asp-action="Clear" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger">Clear All Logs</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-3x text-gray-300 mb-3"></i>
+                    <p class="text-gray-500">No logs found</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var log in Model)
+                            {
+                                <tr>
+                                    <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@log.User</td>
+                                    <td>
+                                        <span class="badge bg-@GetActionBadgeColor(log.Action)">
+                                            @log.Action
+                                        </span>
+                                    </td>
+                                    <td>@log.Details</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            Showing page @ViewBag.CurrentPage of @ViewBag.TotalPages
+                        </div>
+                        <nav>
+                            <ul class="pagination mb-0">
+                                @if (ViewBag.CurrentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, pageSize = ViewBag.PageSize })">
+                                            Previous
+                                        </a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, pageSize = ViewBag.PageSize })">
+                                            Next
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#logsTable').DataTable({
+                order: [[0, 'desc']],
+                pageLength: @ViewBag.PageSize,
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search logs..."
+                }
+            });
+        });
+    </script>
+}
+
+@functions {
+    string GetActionBadgeColor(string action)
+    {
+        return action.ToLower() switch
+        {
+            var a when a.Contains("error") => "danger",
+            var a when a.Contains("create") || a.Contains("add") => "success",
+            var a when a.Contains("update") || a.Contains("edit") => "info",
+            var a when a.Contains("delete") || a.Contains("remove") => "warning",
+            _ => "secondary"
+        };
+    }
+}
+
+<style>
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff !important;
+        font-weight: bold;
+    }
+    .modal.fade .modal-dialog {
+        transition: transform 0.3s ease-out;
+        transform: translateY(-20%);
+    }
+
+    .modal.fade.show .modal-dialog {
+        transform: translateY(0);
+    }
+</style>
